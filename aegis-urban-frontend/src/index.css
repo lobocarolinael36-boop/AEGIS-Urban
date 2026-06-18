@@ -1,0 +1,187 @@
+/* ═══════════════════════════════════════════════════════════════
+   AEGIS Urban — Design System
+   Paleta oficial:
+     Base/Fondo:          #0F172A  #1E293B  #334155
+     Identidad/Tech:      #0EA5E9  #6366F1  #F8FAFC  #94A3B8
+     Estados Críticos:    #EF4444  #F59E0B  #10B981
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Base / Fondos */
+  --color-bg-900:   #0F172A;
+  --color-bg-800:   #1E293B;
+  --color-bg-700:   #334155;
+
+  /* ── Identidad / Tecnología */
+  --color-cyan:     #0EA5E9;
+  --color-indigo:   #6366F1;
+  --color-white:    #F8FAFC;
+  --color-slate:    #94A3B8;
+
+  /* ── Estados Críticos */
+  --color-danger:   #EF4444;
+  --color-warning:  #F59E0B;
+  --color-safe:     #10B981;
+
+  /* ── Derivados útiles */
+  --color-cyan-dark:    #0284C7;
+  --color-indigo-dark:  #4F46E5;
+  --color-bg-overlay:   rgba(15, 23, 42, 0.85);
+
+  /* ── Tipografía */
+  --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Radios */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+
+  /* ── Sombras */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
+  --shadow-glow-cyan:   0 0 20px rgba(14, 165, 233, 0.35);
+  --shadow-glow-indigo: 0 0 20px rgba(99, 102, 241, 0.35);
+
+  /* ── Transiciones */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* ── Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-900);
+  color: var(--color-white);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track { background: var(--color-bg-800); }
+::-webkit-scrollbar-thumb { background: var(--color-bg-700); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-slate); }
+
+/* ── Tipografía base */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+a {
+  color: var(--color-cyan);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover { color: var(--color-cyan-dark); }
+
+/* ── Inputs globales */
+input, textarea, select {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  background: var(--color-bg-700);
+  color: var(--color-white);
+  border: 1px solid var(--color-bg-700);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--color-slate);
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+input[type="password"]:focus {
+  border-color: var(--color-indigo);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* ── Botones base */
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Utilidades */
+.text-cyan    { color: var(--color-cyan); }
+.text-indigo  { color: var(--color-indigo); }
+.text-danger  { color: var(--color-danger); }
+.text-warning { color: var(--color-warning); }
+.text-safe    { color: var(--color-safe); }
+.text-slate   { color: var(--color-slate); }
+.text-mono    { font-family: var(--font-mono); }
+
+.bg-800 { background-color: var(--color-bg-800); }
+.bg-700 { background-color: var(--color-bg-700); }
+
+/* ── Badge de estado */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.badge--danger  { background: rgba(239,68,68,0.15);  color: var(--color-danger); }
+.badge--warning { background: rgba(245,158,11,0.15); color: var(--color-warning); }
+.badge--safe    { background: rgba(16,185,129,0.15); color: var(--color-safe); }
+.badge--cyan    { background: rgba(14,165,233,0.15); color: var(--color-cyan); }
+
+/* ── Loading spinner */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-bg-700);
+  border-top-color: var(--color-cyan);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Suspense fallback */
+.page-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+  background: var(--color-bg-900);
+  color: var(--color-slate);
+  font-size: 0.875rem;
+}

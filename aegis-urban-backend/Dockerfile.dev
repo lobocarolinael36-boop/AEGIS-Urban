@@ -1,0 +1,7 @@
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+# src se monta como volumen — no se copia en la imagen de dev
+EXPOSE 3001
+CMD ["npm", "run", "dev"]

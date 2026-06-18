@@ -1,0 +1,57 @@
+# ── Dependencias ──────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ── Builds ────────────────────────────────────────────────
+dist/
+build/
+out/
+.vite/
+
+# ── TypeScript ────────────────────────────────────────────
+*.tsbuildinfo
+
+# ── Variables de entorno (¡NUNCA subir!) ──────────────────
+.env
+.env.local
+.env.*.local
+# Excepción: el template sí se sube
+!.env.example
+
+# ── Logs ──────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Cobertura de tests ────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Backups de BD (generados por BackupScheduler.ts) ──────
+aegis-urban-backend/backups/
+*.sql.gz
+
+# ── IDEs ──────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# ── Docker (archivos locales) ──────────────────────────────
+.dockerignore
+
+# ── Vitest ────────────────────────────────────────────────
+vitest.config.ts.timestamp*

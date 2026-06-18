@@ -1,0 +1,83 @@
+{
+  "app": {
+    "name": "AEGIS Urban",
+    "tagline": "Plataforma de Orquestación Logística y Alerta Temprana"
+  },
+  "nav": {
+    "dashboard":  "Panel de Control",
+    "cityMap":    "Mapa Ciudad",
+    "sensors":    "Sensores",
+    "alerts":     "Alertas",
+    "simulation": "Simulación",
+    "admin":      "Administración",
+    "logout":     "Cerrar Sesión"
+  },
+  "auth": {
+    "loginTitle":       "Iniciar Sesión",
+    "loginSubtitle":    "Acceso al sistema de monitoreo AEGIS Urban",
+    "username":         "Usuario",
+    "password":         "Contraseña",
+    "usernamePlaceholder": "Tu nombre de usuario",
+    "passwordPlaceholder": "Tu contraseña",
+    "loginButton":      "Ingresar",
+    "loggingIn":        "Verificando...",
+    "invalidCredentials": "Usuario o contraseña incorrectos",
+    "sessionExpired":   "Tu sesión expiró. Por favor iniciá sesión nuevamente."
+  },
+  "dashboard": {
+    "title":          "Panel de Control",
+    "activeSensors":  "Sensores Activos",
+    "activeAlerts":   "Alertas Activas",
+    "criticalAlerts": "Alertas Críticas",
+    "lastUpdate":     "Última actualización"
+  },
+  "alerts": {
+    "level": {
+      "INFO":     "Información",
+      "LOW":      "Bajo",
+      "MEDIUM":   "Medio",
+      "HIGH":     "Alto",
+      "CRITICAL": "Crítico"
+    },
+    "noAlerts":   "Sin alertas activas",
+    "acknowledge": "Reconocer"
+  },
+  "sensors": {
+    "type": {
+      "FLOOD":       "Inundación",
+      "FIRE":        "Incendio",
+      "WIND":        "Viento",
+      "AIR_QUALITY": "Calidad del Aire"
+    },
+    "status": {
+      "ACTIVE":   "Activo",
+      "INACTIVE": "Inactivo",
+      "FAULT":    "Falla",
+      "CALIBRATING": "Calibrando"
+    }
+  },
+  "simulation": {
+    "title":       "Motor de Simulación",
+    "newScenario": "Nuevo Escenario",
+    "runSim":      "Ejecutar Simulación",
+    "stopSim":     "Detener"
+  },
+  "common": {
+    "loading":  "Cargando...",
+    "error":    "Ocurrió un error",
+    "save":     "Guardar",
+    "cancel":   "Cancelar",
+    "confirm":  "Confirmar",
+    "delete":   "Eliminar",
+    "edit":     "Editar",
+    "view":     "Ver",
+    "search":   "Buscar",
+    "noData":   "Sin datos disponibles",
+    "language": "Idioma"
+  },
+  "help": {
+    "dvhDvv": "DVH/DVV garantizan la inmutabilidad de cada registro de auditoría. Cualquier alteración directa en la base de datos es detectada automáticamente.",
+    "composite": "El sistema de permisos usa Patrón Composite: cada familia hereda los permisos de su familia padre más los propios.",
+    "simulation": "El Motor de Simulación (Mocking Engine) genera escenarios de catástrofe sin hardware real, usando datos sintéticos calibrados por zona geográfica."
+  }
+}

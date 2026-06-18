@@ -1,0 +1,192 @@
+/* ── Página completa centrada sobre el fondo oscuro */
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: var(--color-bg-900);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Grilla de puntos decorativa (efecto "smart city") */
+.bgGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(14,165,233,0.08) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+/* gradiente radial para que el brillo venga del centro */
+.bgGrid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%,
+    transparent 30%,
+    var(--color-bg-900) 100%);
+}
+
+/* ── Card central */
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-bg-800);
+  border: 1px solid rgba(14,165,233,0.15);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
+  box-shadow:
+    var(--shadow-md),
+    0 0 40px rgba(14,165,233,0.06);
+}
+
+/* ── Header */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.logoRing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border: 2px solid rgba(14,165,233,0.3);
+  border-radius: 50%;
+  background: rgba(14,165,233,0.06);
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--color-white) 40%, var(--color-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--color-slate);
+  max-width: 28ch;
+  line-height: 1.4;
+}
+
+/* ── Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-slate);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.input {
+  /* hereda estilos globales de src/index.css */
+}
+
+/* ── Error */
+.error {
+  font-size: 0.8rem;
+  color: var(--color-danger);
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+}
+
+/* ── Botón de submit */
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-bg-900);
+  background: linear-gradient(135deg, var(--color-cyan), var(--color-indigo));
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+}
+.submitBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(14,165,233,0.45);
+}
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.submitBtn:disabled {
+  background: var(--color-bg-700);
+  color: var(--color-slate);
+  box-shadow: none;
+}
+
+/* ── Spinner dentro del botón */
+.btnSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(15,23,42,0.3);
+  border-top-color: var(--color-bg-900);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer */
+.footer {
+  margin-top: 1.75rem;
+  display: flex;
+  justify-content: center;
+}
+
+.securityBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--color-slate);
+  opacity: 0.7;
+}
+
+/* ── Responsive */
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.25rem;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+}

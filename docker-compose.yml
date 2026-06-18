@@ -1,0 +1,86 @@
+# ============================================================
+# AEGIS Urban — Docker Compose (Desarrollo Local)
+# ============================================================
+# SPRINT 1: Levantá solo la BD con:
+#   docker compose up postgres -d
+#
+# FULL STACK (cuando tengas código):
+#   docker compose up -d
+# ============================================================
+
+version: "3.9"
+
+services:
+
+  # ── PostgreSQL 16 ──────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: aegis_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       aegis_urban_db
+      POSTGRES_USER:     aegis_app_user
+      POSTGRES_PASSWORD: aegis_secure_pass_2026
+      TZ:                America/Argentina/Buenos_Aires
+      PGTZ:              America/Argentina/Buenos_Aires
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Las migraciones en esta carpeta se ejecutan automáticamente
+      # al crear el contenedor por primera vez (orden alfabético).
+      - ./aegis-urban-backend/database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegis_app_user -d aegis_urban_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aegis_net
+
+  # ── Backend Node.js ────────────────────────────────────────
+  backend:
+    build:
+      context: ./aegis-urban-backend
+      dockerfile: Dockerfile.dev
+    container_name: aegis_backend
+    restart: unless-stopped
+    env_file:
+      - ./aegis-urban-backend/.env
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./aegis-urban-backend:/app
+      - /app/node_modules          # volume anónimo: NO sincroniza node_modules del host
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - aegis_net
+
+  # ── Frontend React + Vite ──────────────────────────────────
+  frontend:
+    build:
+      context: ./aegis-urban-frontend
+      dockerfile: Dockerfile.dev
+    container_name: aegis_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./aegis-urban-frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - aegis_net
+
+# ── Volúmenes nombrados ────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+
+# ── Red interna ────────────────────────────────────────────
+networks:
+  aegis_net:
+    driver: bridge

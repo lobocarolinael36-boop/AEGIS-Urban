@@ -1,0 +1,83 @@
+{
+  "app": {
+    "name": "AEGIS Urban",
+    "tagline": "Logistics Orchestration & Early Warning Platform"
+  },
+  "nav": {
+    "dashboard":  "Dashboard",
+    "cityMap":    "City Map",
+    "sensors":    "Sensors",
+    "alerts":     "Alerts",
+    "simulation": "Simulation",
+    "admin":      "Administration",
+    "logout":     "Log Out"
+  },
+  "auth": {
+    "loginTitle":       "Sign In",
+    "loginSubtitle":    "Access the AEGIS Urban monitoring system",
+    "username":         "Username",
+    "password":         "Password",
+    "usernamePlaceholder": "Your username",
+    "passwordPlaceholder": "Your password",
+    "loginButton":      "Sign In",
+    "loggingIn":        "Verifying...",
+    "invalidCredentials": "Invalid username or password",
+    "sessionExpired":   "Your session has expired. Please sign in again."
+  },
+  "dashboard": {
+    "title":          "Dashboard",
+    "activeSensors":  "Active Sensors",
+    "activeAlerts":   "Active Alerts",
+    "criticalAlerts": "Critical Alerts",
+    "lastUpdate":     "Last update"
+  },
+  "alerts": {
+    "level": {
+      "INFO":     "Info",
+      "LOW":      "Low",
+      "MEDIUM":   "Medium",
+      "HIGH":     "High",
+      "CRITICAL": "Critical"
+    },
+    "noAlerts":    "No active alerts",
+    "acknowledge": "Acknowledge"
+  },
+  "sensors": {
+    "type": {
+      "FLOOD":       "Flood",
+      "FIRE":        "Fire",
+      "WIND":        "Wind",
+      "AIR_QUALITY": "Air Quality"
+    },
+    "status": {
+      "ACTIVE":      "Active",
+      "INACTIVE":    "Inactive",
+      "FAULT":       "Fault",
+      "CALIBRATING": "Calibrating"
+    }
+  },
+  "simulation": {
+    "title":       "Simulation Engine",
+    "newScenario": "New Scenario",
+    "runSim":      "Run Simulation",
+    "stopSim":     "Stop"
+  },
+  "common": {
+    "loading":  "Loading...",
+    "error":    "An error occurred",
+    "save":     "Save",
+    "cancel":   "Cancel",
+    "confirm":  "Confirm",
+    "delete":   "Delete",
+    "edit":     "Edit",
+    "view":     "View",
+    "search":   "Search",
+    "noData":   "No data available",
+    "language": "Language"
+  },
+  "help": {
+    "dvhDvv": "DVH/DVV ensure the immutability of every audit log entry. Any direct database alteration is automatically detected.",
+    "composite": "The permission system uses the Composite Pattern: each family inherits the permissions of its parent family plus its own.",
+    "simulation": "The Simulation Engine (Mocking Engine) generates disaster scenarios without real hardware, using synthetic data calibrated by geographic zone."
+  }
+}

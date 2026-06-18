@@ -1,0 +1,84 @@
+# ============================================================
+# AEGIS Urban — CI Pipeline (GitHub Actions)
+# ============================================================
+# Se ejecuta en cada push a main y en cada Pull Request.
+# Pasos: install → lint → test → build
+# ============================================================
+
+name: CI — AEGIS Urban
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  # ── Backend ───────────────────────────────────────────────
+  backend:
+    name: Backend (Node.js + TypeScript)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aegis-urban-backend
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: aegis-urban-backend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar tipos TypeScript
+        run: npx tsc --noEmit
+
+      - name: Ejecutar tests unitarios
+        run: npm test -- --passWithNoTests
+        env:
+          NODE_ENV: test
+          DB_HOST:  localhost
+          DB_PORT:  5432
+          DB_NAME:  aegis_test_db
+          DB_USER:  aegis_app_user
+          DB_PASSWORD: test_password
+
+      - name: Compilar a JavaScript
+        run: npm run build
+
+  # ── Frontend ──────────────────────────────────────────────
+  frontend:
+    name: Frontend (React + Vite + TypeScript)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aegis-urban-frontend
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: aegis-urban-frontend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar tipos TypeScript
+        run: npx tsc --noEmit
+
+      - name: Ejecutar tests
+        run: npm test
+
+      - name: Build de producción
+        run: npm run build
