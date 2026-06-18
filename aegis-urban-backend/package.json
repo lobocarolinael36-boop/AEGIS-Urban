@@ -4,7 +4,7 @@
   "description": "AEGIS Urban — API Backend (Node.js + TypeScript + Express)",
   "main": "dist/app.js",
   "scripts": {
-    "dev":            "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
+    "dev":            "ts-node-dev --respawn --transpile-only --exit-child -r tsconfig-paths/register src/app.ts",
     "build":          "tsc",
     "start":          "node dist/app.js",
     "test":           "jest --passWithNoTests",
@@ -37,6 +37,7 @@
     "supertest":           "^7.0.0",
     "ts-jest":             "^29.1.4",
     "ts-node-dev":         "^2.0.0",
+    "tsconfig-paths":      "^4.2.0",
     "typescript":          "^5.4.5"
   }
 }
