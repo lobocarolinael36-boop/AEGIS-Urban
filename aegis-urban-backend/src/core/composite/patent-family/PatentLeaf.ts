@@ -1,27 +1,27 @@
-import { IPermissionComponent } from "./IPermissionComponent";
+import { IComponentePermiso } from "./IPermissionComponent";
 import { HttpMethod } from "../../../shared/types/domain.types";
 
 /**
- * PatentLeaf — Hoja del Composite.
+ * HojaPatente — Hoja del Composite.
  *
  * Representa un permiso atómico e indivisible.
- * No tiene hijos. hasPermission() compara directamente
+ * No tiene hijos. tienePermiso() compara directamente
  * el recurso y método HTTP solicitado con los suyos.
  */
-export class PatentLeaf implements IPermissionComponent {
+export class HojaPatente implements IComponentePermiso {
   constructor(
-    private readonly code:       string,
-    private readonly resource:   string,
-    private readonly httpMethod: HttpMethod
+    private readonly codigo:     string,
+    private readonly recurso:    string,
+    private readonly metodoHttp: HttpMethod
   ) {}
 
-  getCode(): string { return this.code; }
+  obtenerCodigo(): string { return this.codigo; }
 
-  hasPermission(resource: string, method: string): boolean {
-    // Comparación exacta. La normalización a mayúsculas previene errores de capitalización.
+  tienePermiso(recurso: string, metodo: string): boolean {
+    // Comparación exacta. toUpperCase() previene errores de capitalización.
     return (
-      this.resource   === resource &&
-      this.httpMethod === method.toUpperCase()
+      this.recurso    === recurso &&
+      this.metodoHttp === metodo.toUpperCase()
     );
   }
 }

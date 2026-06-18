@@ -4,21 +4,21 @@ import { useAuthStore } from "../../store/authStore";
 import { useAuth } from "../../context/AuthContext";
 import styles from "./DashboardPage.module.css";
 
-interface StatCard {
-  label:   string;
-  value:   string | number;
-  variant: "cyan" | "warning" | "danger" | "safe";
+interface TarjetaEstadistica {
+  etiqueta: string;
+  valor:    string | number;
+  variante: "cyan" | "warning" | "danger" | "safe";
 }
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const user   = useAuthStore((s) => s.user);
-  const { logout } = useAuth();
+  const usuario          = useAuthStore((s) => s.usuario);
+  const { cerrarSesion } = useAuth();
 
-  const stats: StatCard[] = [
-    { label: t("dashboard.activeSensors"),  value: "—", variant: "cyan" },
-    { label: t("dashboard.activeAlerts"),   value: "—", variant: "warning" },
-    { label: t("dashboard.criticalAlerts"), value: "—", variant: "danger" },
+  const estadisticas: TarjetaEstadistica[] = [
+    { etiqueta: t("dashboard.activeSensors"),  valor: "—", variante: "cyan" },
+    { etiqueta: t("dashboard.activeAlerts"),   valor: "—", variante: "warning" },
+    { etiqueta: t("dashboard.criticalAlerts"), valor: "—", variante: "danger" },
   ];
 
   return (
@@ -35,19 +35,19 @@ export default function DashboardPage() {
         </div>
         <ul className={styles.navList}>
           {[
-            { href: "/dashboard",  label: t("nav.dashboard") },
-            { href: "/map",        label: t("nav.cityMap") },
-            { href: "/sensors",    label: t("nav.sensors") },
-            { href: "/alerts",     label: t("nav.alerts") },
-            { href: "/simulation", label: t("nav.simulation") },
-            { href: "/admin",      label: t("nav.admin") },
-          ].map(({ href, label }) => (
+            { href: "/dashboard",  etiqueta: t("nav.dashboard") },
+            { href: "/mapa",       etiqueta: t("nav.cityMap") },
+            { href: "/sensores",   etiqueta: t("nav.sensors") },
+            { href: "/alertas",    etiqueta: t("nav.alerts") },
+            { href: "/simulacion", etiqueta: t("nav.simulation") },
+            { href: "/admin",      etiqueta: t("nav.admin") },
+          ].map(({ href, etiqueta }) => (
             <li key={href}>
-              <a href={href} className={styles.navLink}>{label}</a>
+              <a href={href} className={styles.navLink}>{etiqueta}</a>
             </li>
           ))}
         </ul>
-        <button onClick={logout} className={styles.logoutBtn}>
+        <button onClick={cerrarSesion} className={styles.logoutBtn}>
           {t("nav.logout")}
         </button>
       </nav>
@@ -56,15 +56,15 @@ export default function DashboardPage() {
       <main className={styles.main}>
         <header className={styles.topbar}>
           <h1 className={styles.pageTitle}>{t("dashboard.title")}</h1>
-          <span className={styles.userChip}>{user?.familyName} — {user?.username}</span>
+          <span className={styles.userChip}>{usuario?.familia} — {usuario?.username}</span>
         </header>
 
         {/* ── Tarjetas de estadísticas */}
         <section className={styles.statsGrid}>
-          {stats.map((s) => (
-            <div key={s.label} className={`${styles.statCard} ${styles[`statCard--${s.variant}`]}`}>
-              <span className={styles.statValue}>{s.value}</span>
-              <span className={styles.statLabel}>{s.label}</span>
+          {estadisticas.map((s) => (
+            <div key={s.etiqueta} className={`${styles.statCard} ${styles[`statCard--${s.variante}`]}`}>
+              <span className={styles.statValue}>{s.valor}</span>
+              <span className={styles.statLabel}>{s.etiqueta}</span>
             </div>
           ))}
         </section>

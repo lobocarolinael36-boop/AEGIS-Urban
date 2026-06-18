@@ -1,10 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { AuthService } from "./auth.service";
-import { requireAuth } from "./auth.middleware";
+import { requiereAutenticacion } from "./auth.middleware";
 import { BadRequestError } from "../../shared/errors/AppError";
 
-const router      = Router();
-const authService = new AuthService();
+const router       = Router();
+const servicioAuth = new AuthService();
 
 // POST /api/auth/login
 router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
@@ -15,14 +15,20 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
       throw new BadRequestError("username y password son requeridos");
     }
 
-    const ipAddress = (req.ip ?? req.socket.remoteAddress ?? "unknown").replace("::ffff:", "");
-    const userAgent = req.headers["user-agent"] ?? "unknown";
+    const direccionIp  = (req.ip ?? req.socket.remoteAddress ?? "unknown").replace("::ffff:", "");
+    const agenteUsuario = req.headers["user-agent"] ?? "unknown";
 
-    const result = await authService.login(username, password, ipAddress, userAgent);
+    const resultado = await servicioAuth.iniciarSesion(username, password, direccionIp, agenteUsuario);
 
     res.status(200).json({
       message: "Sesión iniciada correctamente",
-      ...result,
+      token:   resultado.token,
+      user: {
+        id:         resultado.usuario.id,
+        username:   resultado.usuario.username,
+        familyId:   resultado.usuario.idFamilia,
+        familyName: resultado.usuario.familia,
+      },
     });
   } catch (err) {
     next(err);
@@ -30,10 +36,10 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
 });
 
 // POST /api/auth/logout  (requiere JWT válido)
-router.post("/logout", requireAuth, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/logout", requiereAutenticacion, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization!.slice(7);
-    await authService.logout(token);
+    await servicioAuth.cerrarSesion(token);
     res.status(200).json({ message: "Sesión cerrada correctamente" });
   } catch (err) {
     next(err);
@@ -41,10 +47,10 @@ router.post("/logout", requireAuth, async (req: Request, res: Response, next: Ne
 });
 
 // GET /api/auth/me  (retorna datos del usuario autenticado)
-router.get("/me", requireAuth, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/me", requiereAutenticacion, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await authService.getUserById(req.user!.id);
-    res.status(200).json({ user });
+    const usuario = await servicioAuth.obtenerUsuarioPorId(req.user!.id);
+    res.status(200).json({ usuario });
   } catch (err) {
     next(err);
   }

@@ -5,23 +5,23 @@ import styles from "./LoginPage.module.css";
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { iniciarSesion } = useAuth();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState<string | null>(null);
+  const [usuario,    setUsuario]    = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [cargando,   setCargando]   = useState(false);
+  const [error,      setError]      = useState<string | null>(null);
 
-  async function handleSubmit(e: FormEvent) {
+  async function manejarEnvio(e: FormEvent) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setCargando(true);
     try {
-      await login(username, password);
+      await iniciarSesion(usuario, contrasena);
     } catch {
       setError(t("auth.invalidCredentials"));
     } finally {
-      setLoading(false);
+      setCargando(false);
     }
   }
 
@@ -54,37 +54,37 @@ export default function LoginPage() {
         </header>
 
         {/* ── Formulario */}
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
+        <form onSubmit={manejarEnvio} className={styles.form} noValidate>
           <div className={styles.field}>
-            <label htmlFor="username" className={styles.label}>
+            <label htmlFor="usuario" className={styles.label}>
               {t("auth.username")}
             </label>
             <input
-              id="username"
+              id="usuario"
               type="text"
               autoComplete="username"
               placeholder={t("auth.usernamePlaceholder")}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
               required
-              disabled={loading}
+              disabled={cargando}
               className={styles.input}
             />
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="password" className={styles.label}>
+            <label htmlFor="contrasena" className={styles.label}>
               {t("auth.password")}
             </label>
             <input
-              id="password"
+              id="contrasena"
               type="password"
               autoComplete="current-password"
               placeholder={t("auth.passwordPlaceholder")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
               required
-              disabled={loading}
+              disabled={cargando}
               className={styles.input}
             />
           </div>
@@ -97,10 +97,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading || !username || !password}
+            disabled={cargando || !usuario || !contrasena}
             className={styles.submitBtn}
           >
-            {loading ? (
+            {cargando ? (
               <>
                 <span className={styles.btnSpinner} />
                 {t("auth.loggingIn")}

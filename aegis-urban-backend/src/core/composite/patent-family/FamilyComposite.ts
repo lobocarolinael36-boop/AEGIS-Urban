@@ -1,42 +1,42 @@
-import { IPermissionComponent } from "./IPermissionComponent";
+import { IComponentePermiso } from "./IPermissionComponent";
 
 /**
- * FamilyComposite — Nodo compuesto del Composite.
+ * FamiliaComposite — Nodo compuesto del Composite.
  *
  * Representa un rol/familia que puede contener:
- * - PatentLeaf (permisos atómicos)
- * - Otras FamilyComposite (sub-roles o jerarquías)
+ * - HojaPatente (permisos atómicos)
+ * - Otras FamiliaComposite (sub-roles o jerarquías)
  *
- * hasPermission() evalúa con OR lógico sobre todos los hijos.
+ * tienePermiso() evalúa con OR lógico sobre todos los hijos.
  * Si ALGÚN hijo tiene el permiso, la familia lo tiene.
  * La recursión se encarga de profundizar en sub-familias automáticamente.
  */
-export class FamilyComposite implements IPermissionComponent {
-  private children: IPermissionComponent[] = [];
+export class FamiliaComposite implements IComponentePermiso {
+  private hijos: IComponentePermiso[] = [];
 
-  constructor(private readonly familyName: string) {}
+  constructor(private readonly nombreFamilia: string) {}
 
-  getCode(): string { return this.familyName; }
+  obtenerCodigo(): string { return this.nombreFamilia; }
 
-  add(component: IPermissionComponent): this {
-    this.children.push(component);
+  agregar(componente: IComponentePermiso): this {
+    this.hijos.push(componente);
     return this;
   }
 
-  remove(code: string): void {
-    this.children = this.children.filter(c => c.getCode() !== code);
+  eliminar(codigo: string): void {
+    this.hijos = this.hijos.filter(h => h.obtenerCodigo() !== codigo);
   }
 
   /**
    * Evaluación recursiva de permisos.
    * Recorre todos los hijos con Array.some() — cortocircuita en el primer true.
    */
-  hasPermission(resource: string, method: string): boolean {
-    return this.children.some(child => child.hasPermission(resource, method));
+  tienePermiso(recurso: string, metodo: string): boolean {
+    return this.hijos.some(hijo => hijo.tienePermiso(recurso, metodo));
   }
 
-  /** Lista los códigos directos de los hijos (para debugging / UI). */
-  getChildCodes(): string[] {
-    return this.children.map(c => c.getCode());
+  /** Lista los códigos directos de los hijos (para depuración / UI). */
+  obtenerCodigosHijos(): string[] {
+    return this.hijos.map(h => h.obtenerCodigo());
   }
 }

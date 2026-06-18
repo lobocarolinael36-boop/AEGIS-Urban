@@ -1,40 +1,40 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface AuthUser {
-  id:         number;
-  username:   string;
-  familyId:   number;
-  familyName: string;
+export interface UsuarioAuth {
+  id:        number;
+  username:  string;
+  idFamilia: number;
+  familia:   string;
 }
 
-interface AuthState {
-  user:    AuthUser | null;
-  token:   string | null;
-  isAuth:  boolean;
-  setAuth: (user: AuthUser, token: string) => void;
-  logout:  () => void;
+interface EstadoAuth {
+  usuario:            UsuarioAuth | null;
+  token:              string | null;
+  autenticado:        boolean;
+  establecerSesion:   (usuario: UsuarioAuth, token: string) => void;
+  cerrarSesion:       () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<EstadoAuth>()(
   persist(
     (set) => ({
-      user:   null,
-      token:  null,
-      isAuth: false,
+      usuario:     null,
+      token:       null,
+      autenticado: false,
 
-      setAuth: (user, token) =>
-        set({ user, token, isAuth: true }),
+      establecerSesion: (usuario, token) =>
+        set({ usuario, token, autenticado: true }),
 
-      logout: () =>
-        set({ user: null, token: null, isAuth: false }),
+      cerrarSesion: () =>
+        set({ usuario: null, token: null, autenticado: false }),
     }),
     {
-      name:    "aegis-auth",
-      partialize: (state) => ({
-        user:  state.user,
-        token: state.token,
-        isAuth: state.isAuth,
+      name: "aegis-auth",
+      partialize: (estado) => ({
+        usuario:     estado.usuario,
+        token:       estado.token,
+        autenticado: estado.autenticado,
       }),
     }
   )

@@ -4,15 +4,15 @@ import { useAuthStore } from "../store/authStore";
 
 // ── Lazy loading — cada página carga su chunk JS solo cuando se navega a ella.
 // CityMap carga Leaflet (~500kb) únicamente cuando el usuario abre el mapa.
-const LoginPage    = lazy(() => import("../pages/Login/LoginPage"));
-const DashboardPage = lazy(() => import("../pages/Dashboard/DashboardPage"));
-const CityMapPage  = lazy(() => import("../pages/CityMap/CityMapPage"));
-const SensorsPage  = lazy(() => import("../pages/Sensors/SensorsPage"));
-const AlertsPage   = lazy(() => import("../pages/Alerts/AlertsPage"));
-const SimulationPage = lazy(() => import("../pages/Simulation/SimulationPage"));
-const AdminPage    = lazy(() => import("../pages/Admin/AdminPage"));
+const PaginaLogin      = lazy(() => import("../pages/Login/LoginPage"));
+const PaginaDashboard  = lazy(() => import("../pages/Dashboard/DashboardPage"));
+const PaginaMapa       = lazy(() => import("../pages/CityMap/CityMapPage"));
+const PaginaSensores   = lazy(() => import("../pages/Sensors/SensorsPage"));
+const PaginaAlertas    = lazy(() => import("../pages/Alerts/AlertsPage"));
+const PaginaSimulacion = lazy(() => import("../pages/Simulation/SimulationPage"));
+const PaginaAdmin      = lazy(() => import("../pages/Admin/AdminPage"));
 
-function PageLoader() {
+function CargadorPagina() {
   return (
     <div className="page-loader">
       <div className="spinner" />
@@ -21,36 +21,36 @@ function PageLoader() {
   );
 }
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const isAuth = useAuthStore((s) => s.isAuth);
-  return isAuth ? <>{children}</> : <Navigate to="/login" replace />;
+function RutaPrivada({ children }: { children: React.ReactNode }) {
+  const autenticado = useAuthStore((s) => s.autenticado);
+  return autenticado ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
 export default function AppRouter() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<CargadorPagina />}>
       <Routes>
         {/* ── Pública */}
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<PaginaLogin />} />
 
         {/* ── Privadas */}
         <Route path="/dashboard" element={
-          <PrivateRoute><DashboardPage /></PrivateRoute>
+          <RutaPrivada><PaginaDashboard /></RutaPrivada>
         } />
-        <Route path="/map" element={
-          <PrivateRoute><CityMapPage /></PrivateRoute>
+        <Route path="/mapa" element={
+          <RutaPrivada><PaginaMapa /></RutaPrivada>
         } />
-        <Route path="/sensors" element={
-          <PrivateRoute><SensorsPage /></PrivateRoute>
+        <Route path="/sensores" element={
+          <RutaPrivada><PaginaSensores /></RutaPrivada>
         } />
-        <Route path="/alerts" element={
-          <PrivateRoute><AlertsPage /></PrivateRoute>
+        <Route path="/alertas" element={
+          <RutaPrivada><PaginaAlertas /></RutaPrivada>
         } />
-        <Route path="/simulation" element={
-          <PrivateRoute><SimulationPage /></PrivateRoute>
+        <Route path="/simulacion" element={
+          <RutaPrivada><PaginaSimulacion /></RutaPrivada>
         } />
         <Route path="/admin" element={
-          <PrivateRoute><AdminPage /></PrivateRoute>
+          <RutaPrivada><PaginaAdmin /></RutaPrivada>
         } />
 
         {/* ── Redireccionamiento raíz */}

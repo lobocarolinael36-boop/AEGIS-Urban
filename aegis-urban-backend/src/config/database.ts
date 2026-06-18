@@ -1,24 +1,24 @@
 import { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 import { env } from "./env";
 
-type QueryParams = (string | number | boolean | null | Date | Buffer)[];
+type ParametrosConsulta = (string | number | boolean | null | Date | Buffer)[];
 
 /**
  * DatabaseConnection — Patrón Singleton
  *
  * Garantiza una única instancia del Pool de conexiones pg en toda la app.
  * El constructor es privado: la única forma de obtener la instancia es
- * llamando a DatabaseConnection.getInstance().
+ * llamando a DatabaseConnection.obtenerInstancia().
  *
  * Thread-safety: Node.js es single-threaded (event loop), por lo que
  * la inicialización lazy del Singleton es inherentemente segura.
  */
 export class DatabaseConnection {
-  // La instancia única — null hasta la primera llamada a getInstance()
-  private static instance: DatabaseConnection | null = null;
+  // La instancia única — null hasta la primera llamada a obtenerInstancia()
+  private static instancia: DatabaseConnection | null = null;
 
   private readonly pool: Pool;
-  private queryCount = 0;
+  private contadorConsultas = 0;
 
   // Constructor PRIVADO: impide hacer `new DatabaseConnection()` desde afuera
   private constructor() {
@@ -35,59 +35,59 @@ export class DatabaseConnection {
     });
 
     this.pool.on("error", (err) => {
-      console.error("[DB] Error en cliente inactivo del pool:", err.message);
+      console.error("[BD] Error en cliente inactivo del pool:", err.message);
     });
 
     if (env.NODE_ENV !== "test") {
-      console.log(`[DB] Pool inicializado → ${env.db.host}:${env.db.port}/${env.db.name}`);
+      console.log(`[BD] Pool inicializado → ${env.db.host}:${env.db.port}/${env.db.name}`);
     }
   }
 
   /**
-   * getInstance() — Punto de acceso global al Singleton.
+   * obtenerInstancia() — Punto de acceso global al Singleton.
    * Crea la instancia la primera vez; las siguientes veces retorna la existente.
    */
-  public static getInstance(): DatabaseConnection {
-    if (DatabaseConnection.instance === null) {
-      DatabaseConnection.instance = new DatabaseConnection();
+  public static obtenerInstancia(): DatabaseConnection {
+    if (DatabaseConnection.instancia === null) {
+      DatabaseConnection.instancia = new DatabaseConnection();
     }
-    return DatabaseConnection.instance;
+    return DatabaseConnection.instancia;
   }
 
-  /** Ejecuta una query SQL parametrizada con tipado genérico en el resultado. */
-  public async query<T extends QueryResultRow = QueryResultRow>(
+  /** Ejecuta una consulta SQL parametrizada con tipado genérico en el resultado. */
+  public async consultar<T extends QueryResultRow = QueryResultRow>(
     sql: string,
-    params?: QueryParams
+    params?: ParametrosConsulta
   ): Promise<QueryResult<T>> {
-    const start = Date.now();
-    this.queryCount++;
+    const inicio = Date.now();
+    this.contadorConsultas++;
 
     try {
-      const result = await this.pool.query<T>(sql, params);
+      const resultado = await this.pool.query<T>(sql, params);
 
       if (env.NODE_ENV === "development") {
-        const ms = Date.now() - start;
-        console.log(`[DB] #${this.queryCount} ${ms}ms rows:${result.rowCount ?? 0}`);
+        const ms = Date.now() - inicio;
+        console.log(`[BD] #${this.contadorConsultas} ${ms}ms filas:${resultado.rowCount ?? 0}`);
       }
 
-      return result;
+      return resultado;
     } catch (err) {
       const e = err as Error;
-      console.error("[DB] Query error:", e.message);
+      console.error("[BD] Error en consulta:", e.message);
       throw e;
     }
   }
 
   /**
-   * getClient() — Cliente dedicado del pool para transacciones manuales.
-   * ⚠️ Siempre llamar client.release() en el bloque finally.
+   * obtenerCliente() — Cliente dedicado del pool para transacciones manuales.
+   * ⚠️ Siempre llamar cliente.release() en el bloque finally.
    */
-  public async getClient(): Promise<PoolClient> {
+  public async obtenerCliente(): Promise<PoolClient> {
     return this.pool.connect();
   }
 
   /** Verifica conectividad con la BD — usado en GET /api/health */
-  public async healthCheck(): Promise<boolean> {
+  public async verificarConexion(): Promise<boolean> {
     try {
       await this.pool.query("SELECT 1");
       return true;
@@ -97,23 +97,23 @@ export class DatabaseConnection {
   }
 
   /** Estadísticas del pool para monitoreo */
-  public getStats() {
+  public obtenerEstadisticas() {
     return {
-      total:   this.pool.totalCount,
-      idle:    this.pool.idleCount,
-      waiting: this.pool.waitingCount,
-      queries: this.queryCount,
+      total:     this.pool.totalCount,
+      inactivos: this.pool.idleCount,
+      en_espera: this.pool.waitingCount,
+      consultas: this.contadorConsultas,
     };
   }
 
   /** Cierre graceful del pool — llamar en SIGTERM / SIGINT */
-  public async close(): Promise<void> {
+  public async cerrar(): Promise<void> {
     await this.pool.end();
-    DatabaseConnection.instance = null;
-    console.log("[DB] Pool cerrado correctamente");
+    DatabaseConnection.instancia = null;
+    console.log("[BD] Pool cerrado correctamente");
   }
 }
 
 // Instancia compartida lista para importar en cualquier módulo:
 // import { db } from '@config/database';
-export const db = DatabaseConnection.getInstance();
+export const db = DatabaseConnection.obtenerInstancia();

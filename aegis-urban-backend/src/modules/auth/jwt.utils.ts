@@ -4,67 +4,67 @@ import { env } from "../../config/env";
 import { db } from "../../config/database";
 import { UnauthorizedError } from "../../shared/errors/AppError";
 
-export interface JwtPayload {
+export interface PayloadToken {
   sub:        number;     // id_user
-  username:   string;
-  familyId:   number;
-  familyName: string;
+  usuario:    string;
+  idFamilia:  number;
+  familia:    string;
   iat?:       number;
   exp?:       number;
 }
 
-export class JwtUtils {
+export class GestorJwt {
   /** Genera un JWT firmado con los datos del usuario. */
-  static sign(payload: Omit<JwtPayload, "iat" | "exp">): string {
+  static firmar(payload: Omit<PayloadToken, "iat" | "exp">): string {
     return jwt.sign(payload, env.jwt.secret, {
       expiresIn: env.jwt.expiresIn as jwt.SignOptions["expiresIn"],
     });
   }
 
-  /** Verifica y decodifica un JWT. Lanza UnauthorizedError si es inválido. */
-  static verify(token: string): JwtPayload {
+  /** Verifica y decodifica un JWT. Lanza UnauthorizedError si es inválido o expirado. */
+  static verificar(token: string): PayloadToken {
     try {
-      return jwt.verify(token, env.jwt.secret) as JwtPayload;
+      return jwt.verify(token, env.jwt.secret) as PayloadToken;
     } catch {
       throw new UnauthorizedError("Token inválido o expirado");
     }
   }
 
   /** SHA-256 del token completo — se almacena en session_token para la blacklist. */
-  static hash(token: string): string {
+  static hashear(token: string): string {
     return crypto.createHash("sha256").update(token).digest("hex");
   }
 
   /** Verifica que el token no esté en la blacklist (revocado). */
-  static async isRevoked(tokenHash: string): Promise<boolean> {
-    const result = await db.query<{ is_revoked: boolean }>(
+  static async estaRevocado(hashToken: string): Promise<boolean> {
+    const resultado = await db.consultar<{ is_revoked: boolean }>(
       "SELECT is_revoked FROM session_token WHERE token_hash = $1",
-      [tokenHash]
+      [hashToken]
     );
-    if (result.rows.length === 0) return true; // no registrado = inválido
-    return result.rows[0].is_revoked;
+    if (resultado.rows.length === 0) return true; // no registrado = inválido
+    return resultado.rows[0].is_revoked;
   }
 
-  /** Registra el token en BD al login. */
-  static async register(
-    tokenHash: string,
-    userId: number,
-    ipAddress: string,
-    userAgent: string,
-    expiresAt: Date
+  /** Registra el token en BD al iniciar sesión. */
+  static async registrar(
+    hashToken:    string,
+    idUsuario:    number,
+    direccionIp:  string,
+    agenteUsuario: string,
+    expiraEn:     Date
   ): Promise<void> {
-    await db.query(
+    await db.consultar(
       `INSERT INTO session_token (id_user, token_hash, ip_address, user_agent, expires_at)
        VALUES ($1, $2, $3, $4, $5)`,
-      [userId, tokenHash, ipAddress, userAgent, expiresAt]
+      [idUsuario, hashToken, direccionIp, agenteUsuario, expiraEn]
     );
   }
 
-  /** Revoca el token en BD al logout. */
-  static async revoke(tokenHash: string): Promise<void> {
-    await db.query(
+  /** Revoca el token en BD al cerrar sesión. */
+  static async revocar(hashToken: string): Promise<void> {
+    await db.consultar(
       "UPDATE session_token SET is_revoked = TRUE WHERE token_hash = $1",
-      [tokenHash]
+      [hashToken]
     );
   }
 }

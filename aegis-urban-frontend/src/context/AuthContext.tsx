@@ -1,45 +1,53 @@
 import React, { createContext, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import api, { LoginResponse } from "../services/api";
+import api, { RespuestaLogin } from "../services/api";
 
-interface AuthContextValue {
-  login:  (username: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+interface ValorContextoAuth {
+  iniciarSesion: (username: string, contrasena: string) => Promise<void>;
+  cerrarSesion:  () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+const ContextoAuth = createContext<ValorContextoAuth | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { setAuth, logout: storeLogout, token } = useAuthStore();
-  const navigate = useNavigate();
+  const { establecerSesion, cerrarSesion: limpiarSesion, token } = useAuthStore();
+  const navegar = useNavigate();
 
-  const login = useCallback(async (username: string, password: string) => {
-    const { data } = await api.post<LoginResponse>("/auth/login", { username, password });
-    setAuth(data.user, data.token);
-    navigate("/dashboard", { replace: true });
-  }, [setAuth, navigate]);
+  const iniciarSesion = useCallback(async (username: string, contrasena: string) => {
+    const { data } = await api.post<RespuestaLogin>("/auth/login", { username, password: contrasena });
+    establecerSesion(
+      {
+        id:        data.user.id,
+        username:  data.user.username,
+        idFamilia: data.user.familyId,
+        familia:   data.user.familyName,
+      },
+      data.token
+    );
+    navegar("/dashboard", { replace: true });
+  }, [establecerSesion, navegar]);
 
-  const logout = useCallback(async () => {
+  const cerrarSesion = useCallback(async () => {
     try {
       if (token) await api.post("/auth/logout");
     } catch {
-      // ignora errores de red en logout
+      // Ignora errores de red en cierre de sesión
     } finally {
-      storeLogout();
-      navigate("/login", { replace: true });
+      limpiarSesion();
+      navegar("/login", { replace: true });
     }
-  }, [token, storeLogout, navigate]);
+  }, [token, limpiarSesion, navegar]);
 
   return (
-    <AuthContext.Provider value={{ login, logout }}>
+    <ContextoAuth.Provider value={{ iniciarSesion, cerrarSesion }}>
       {children}
-    </AuthContext.Provider>
+    </ContextoAuth.Provider>
   );
 }
 
-export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
+export function useAuth(): ValorContextoAuth {
+  const ctx = useContext(ContextoAuth);
   if (!ctx) throw new Error("useAuth debe usarse dentro de <AuthProvider>");
   return ctx;
 }

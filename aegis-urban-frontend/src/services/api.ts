@@ -18,10 +18,10 @@ api.interceptors.request.use((config) => {
 
 // ── Response: limpia sesión si el backend devuelve 401
 api.interceptors.response.use(
-  (response) => response,
+  (respuesta) => respuesta,
   (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
+      useAuthStore.getState().cerrarSesion();
     }
     return Promise.reject(error);
   }
@@ -30,14 +30,14 @@ api.interceptors.response.use(
 export default api;
 
 // ── Tipos de respuesta API
-export interface ApiResponse<T> {
+export interface RespuestaApi<T> {
   success: boolean;
   data:    T;
   message?: string;
 }
 
-export interface LoginResponse {
-  token: string;
+export interface RespuestaLogin {
+  token:   string;
   user: {
     id:         number;
     username:   string;

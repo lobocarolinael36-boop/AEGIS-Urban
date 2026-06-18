@@ -8,15 +8,15 @@ import bcrypt from "bcrypt";
  * NUNCA usar para datos que necesiten descifrarse (usar AESCipher para eso).
  */
 export class BCryptHasher {
-  private static readonly COST_FACTOR = 12;
+  private static readonly FACTOR_COSTO = 12;
 
   /** Hashea una contraseña. Retorna el hash almacenable en BD. */
-  static async hash(password: string): Promise<string> {
-    return bcrypt.hash(password, BCryptHasher.COST_FACTOR);
+  static async hashear(contrasena: string): Promise<string> {
+    return bcrypt.hash(contrasena, BCryptHasher.FACTOR_COSTO);
   }
 
   /** Verifica si una contraseña en texto plano coincide con su hash. */
-  static async compare(plainPassword: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(plainPassword, hash);
+  static async verificarContrasena(contrasenaPlana: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(contrasenaPlana, hash);
   }
 }

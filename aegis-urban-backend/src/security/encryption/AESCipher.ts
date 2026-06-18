@@ -12,48 +12,48 @@ import { env } from "../../config/env";
  * lo que impide ataques de "diccionario de cifrados".
  */
 export class AESCipher {
-  private static readonly ALGORITHM = "aes-256-cbc";
-  private static readonly IV_LENGTH = 16; // AES block size
+  private static readonly ALGORITMO = "aes-256-cbc";
+  private static readonly LONGITUD_IV = 16; // Tamaño de bloque AES
 
-  private static getKey(): Buffer {
-    const keyHex = env.aes.key;
-    if (!keyHex || keyHex.length !== 64) {
+  private static obtenerClave(): Buffer {
+    const claveHex = env.aes.key;
+    if (!claveHex || claveHex.length !== 64) {
       throw new Error("[AES] AES_SECRET_KEY debe ser exactamente 64 caracteres hex (32 bytes).");
     }
-    return Buffer.from(keyHex, "hex");
+    return Buffer.from(claveHex, "hex");
   }
 
   /** Cifra un texto plano. Retorna "iv_hex:ciphertext_hex". */
-  static encrypt(plainText: string): string {
-    const iv  = crypto.randomBytes(AESCipher.IV_LENGTH);
-    const key = AESCipher.getKey();
+  static cifrar(textoPlano: string): string {
+    const iv    = crypto.randomBytes(AESCipher.LONGITUD_IV);
+    const clave = AESCipher.obtenerClave();
 
-    const cipher     = crypto.createCipheriv(AESCipher.ALGORITHM, key, iv);
-    const encrypted  = Buffer.concat([
-      cipher.update(plainText, "utf8"),
-      cipher.final(),
+    const cifrador   = crypto.createCipheriv(AESCipher.ALGORITMO, clave, iv);
+    const cifrado    = Buffer.concat([
+      cifrador.update(textoPlano, "utf8"),
+      cifrador.final(),
     ]);
 
-    return `${iv.toString("hex")}:${encrypted.toString("hex")}`;
+    return `${iv.toString("hex")}:${cifrado.toString("hex")}`;
   }
 
   /** Descifra un texto en formato "iv_hex:ciphertext_hex". */
-  static decrypt(cipherText: string): string {
-    const [ivHex, encryptedHex] = cipherText.split(":");
-    if (!ivHex || !encryptedHex) {
+  static descifrar(textoCifrado: string): string {
+    const [ivHex, cifradoHex] = textoCifrado.split(":");
+    if (!ivHex || !cifradoHex) {
       throw new Error("[AES] Formato de texto cifrado inválido. Esperado: iv:ciphertext");
     }
 
-    const iv        = Buffer.from(ivHex, "hex");
-    const encrypted = Buffer.from(encryptedHex, "hex");
-    const key       = AESCipher.getKey();
+    const iv      = Buffer.from(ivHex, "hex");
+    const cifrado = Buffer.from(cifradoHex, "hex");
+    const clave   = AESCipher.obtenerClave();
 
-    const decipher  = crypto.createDecipheriv(AESCipher.ALGORITHM, key, iv);
-    const decrypted = Buffer.concat([
-      decipher.update(encrypted),
-      decipher.final(),
+    const descifrador = crypto.createDecipheriv(AESCipher.ALGORITMO, clave, iv);
+    const descifrado  = Buffer.concat([
+      descifrador.update(cifrado),
+      descifrador.final(),
     ]);
 
-    return decrypted.toString("utf8");
+    return descifrado.toString("utf8");
   }
 }

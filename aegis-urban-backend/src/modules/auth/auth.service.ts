@@ -1,9 +1,9 @@
 import { db } from "../../config/database";
 import { BCryptHasher } from "../../security/encryption/BCryptHasher";
-import { JwtUtils } from "./jwt.utils";
+import { GestorJwt } from "./jwt.utils";
 import { UnauthorizedError, NotFoundError } from "../../shared/errors/AppError";
 
-interface UserRow {
+interface FilaUsuario {
   id_user:       number;
   username:      string;
   email:         string;
@@ -13,27 +13,27 @@ interface UserRow {
   is_active:     boolean;
 }
 
-export interface LoginResult {
-  token:      string;
-  user: {
+export interface ResultadoLogin {
+  token:   string;
+  usuario: {
     id:         number;
     username:   string;
     email:      string;
-    familyId:   number;
-    familyName: string;
+    idFamilia:  number;
+    familia:    string;
   };
 }
 
 export class AuthService {
 
-  async login(
-    username: string,
-    password: string,
-    ipAddress: string,
-    userAgent: string
-  ): Promise<LoginResult> {
+  async iniciarSesion(
+    username:     string,
+    contrasena:   string,
+    direccionIp:  string,
+    agenteUsuario: string
+  ): Promise<ResultadoLogin> {
     // 1. Buscar usuario con su familia
-    const result = await db.query<UserRow>(`
+    const resultado = await db.consultar<FilaUsuario>(`
       SELECT u.id_user, u.username, u.email, u.password_hash,
              u.id_family, f.name AS family_name, u.is_active
       FROM   users u
@@ -41,67 +41,67 @@ export class AuthService {
       WHERE  u.username = $1
     `, [username]);
 
-    if (result.rows.length === 0) {
+    if (resultado.rows.length === 0) {
       throw new UnauthorizedError("Credenciales incorrectas");
     }
 
-    const user = result.rows[0];
+    const usuario = resultado.rows[0];
 
-    if (!user.is_active) {
+    if (!usuario.is_active) {
       throw new UnauthorizedError("Usuario inactivo. Contactá al administrador.");
     }
 
     // 2. Verificar contraseña con BCrypt
-    const passwordOk = await BCryptHasher.compare(password, user.password_hash);
-    if (!passwordOk) {
+    const contrasenaCorrecta = await BCryptHasher.verificarContrasena(contrasena, usuario.password_hash);
+    if (!contrasenaCorrecta) {
       throw new UnauthorizedError("Credenciales incorrectas");
     }
 
     // 3. Generar JWT
-    const token = JwtUtils.sign({
-      sub:        user.id_user,
-      username:   user.username,
-      familyId:   user.id_family,
-      familyName: user.family_name,
+    const token = GestorJwt.firmar({
+      sub:       usuario.id_user,
+      usuario:   usuario.username,
+      idFamilia: usuario.id_family,
+      familia:   usuario.family_name,
     });
 
     // 4. Registrar token en BD para permitir revocación
-    const tokenHash = JwtUtils.hash(token);
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
-    await JwtUtils.register(tokenHash, user.id_user, ipAddress, userAgent, expiresAt);
+    const hashToken = GestorJwt.hashear(token);
+    const expiraEn  = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+    await GestorJwt.registrar(hashToken, usuario.id_user, direccionIp, agenteUsuario, expiraEn);
 
-    // 5. Actualizar last_login
-    await db.query(
+    // 5. Actualizar última conexión
+    await db.consultar(
       "UPDATE users SET last_login = NOW() WHERE id_user = $1",
-      [user.id_user]
+      [usuario.id_user]
     );
 
     return {
       token,
-      user: {
-        id:         user.id_user,
-        username:   user.username,
-        email:      user.email,
-        familyId:   user.id_family,
-        familyName: user.family_name,
+      usuario: {
+        id:        usuario.id_user,
+        username:  usuario.username,
+        email:     usuario.email,
+        idFamilia: usuario.id_family,
+        familia:   usuario.family_name,
       },
     };
   }
 
-  async logout(token: string): Promise<void> {
-    const tokenHash = JwtUtils.hash(token);
-    await JwtUtils.revoke(tokenHash);
+  async cerrarSesion(token: string): Promise<void> {
+    const hashToken = GestorJwt.hashear(token);
+    await GestorJwt.revocar(hashToken);
   }
 
-  async getUserById(id: number) {
-    const result = await db.query<UserRow>(`
+  async obtenerUsuarioPorId(id: number) {
+    const resultado = await db.consultar<FilaUsuario>(`
       SELECT u.id_user, u.username, u.email, u.id_family, f.name AS family_name
       FROM   users u
       LEFT JOIN family f ON f.id_family = u.id_family
       WHERE  u.id_user = $1 AND u.is_active = TRUE
     `, [id]);
 
-    if (result.rows.length === 0) throw new NotFoundError("Usuario no encontrado");
-    return result.rows[0];
+    if (resultado.rows.length === 0) throw new NotFoundError("Usuario no encontrado");
+    return resultado.rows[0];
   }
 }

@@ -11,10 +11,10 @@ import { errorMiddleware } from "./shared/errors/error.middleware";
 const app: Application = express();
 
 // ── Creamos el servidor HTTP separado del app de Express.
-// Razón: socket.io en Sprint 3 necesita adjuntarse al httpServer,
+// Razón: socket.io en Sprint 3 necesita adjuntarse al servidorHttp,
 // no directamente al objeto Express. Lo hacemos desde el inicio
 // para no tener que refactorizar cuando llegue ese sprint.
-const httpServer = createServer(app);
+const servidorHttp = createServer(app);
 
 // ══════════════════════════════════════════════════════════════
 // MIDDLEWARES GLOBALES
@@ -25,9 +25,9 @@ app.use(helmet());
 
 // CORS: solo acepta requests del frontend
 app.use(cors({
-  origin:      env.FRONTEND_URL,
-  credentials: true,
-  methods:     ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  origin:         env.FRONTEND_URL,
+  credentials:    true,
+  methods:        ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
@@ -44,18 +44,18 @@ app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // GET /api/health — Verifica que el servidor y la BD estén activos
 app.get("/api/health", async (_req: Request, res: Response) => {
-  const dbOk    = await db.healthCheck();
-  const dbStats = db.getStats();
+  const bdOk    = await db.verificarConexion();
+  const estadsBd = db.obtenerEstadisticas();
 
-  res.status(dbOk ? 200 : 503).json({
-    status:      dbOk ? "ok" : "degraded",
-    service:     "AEGIS Urban API",
+  res.status(bdOk ? 200 : 503).json({
+    estado:      bdOk ? "ok" : "degradado",
+    servicio:    "AEGIS Urban API",
     version:     "1.0.0",
-    environment: env.NODE_ENV,
+    entorno:     env.NODE_ENV,
     timestamp:   new Date().toISOString(),
-    database: {
-      status:  dbOk ? "connected" : "disconnected",
-      ...dbStats,
+    baseDatos: {
+      estado:    bdOk ? "conectada" : "desconectada",
+      ...estadsBd,
     },
   });
 });
@@ -63,8 +63,8 @@ app.get("/api/health", async (_req: Request, res: Response) => {
 // ══════════════════════════════════════════════════════════════
 // RUTAS DE MÓDULOS (se irán agregando por sprint)
 // ══════════════════════════════════════════════════════════════
-// Sprint 2: import authRouter from './modules/auth/auth.controller';
-//           app.use('/api/auth', authRouter);
+// Sprint 2: import rutaAuth from './modules/auth/auth.controller';
+//           app.use('/api/auth', rutaAuth);
 
 
 // ══════════════════════════════════════════════════════════════
@@ -85,23 +85,23 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // ARRANQUE DEL SERVIDOR
 // ══════════════════════════════════════════════════════════════
 
-httpServer.listen(env.PORT, () => {
+servidorHttp.listen(env.PORT, () => {
   console.log(`\n✅ AEGIS Urban API corriendo en http://localhost:${env.PORT}`);
   console.log(`📡 Health: http://localhost:${env.PORT}/api/health`);
   console.log(`🌍 Entorno: ${env.NODE_ENV}\n`);
 });
 
-// ── Shutdown graceful (importante para Docker y CI)
-const shutdown = async (signal: string) => {
-  console.log(`\n[${signal}] Cerrando servidor...`);
-  httpServer.close(async () => {
-    await db.close();
+// ── Apagado graceful (importante para Docker y CI)
+const apagarServidor = async (senal: string) => {
+  console.log(`\n[${senal}] Cerrando servidor...`);
+  servidorHttp.close(async () => {
+    await db.cerrar();
     console.log("Servidor cerrado correctamente.");
     process.exit(0);
   });
 };
 
-process.on("SIGTERM", () => shutdown("SIGTERM"));
-process.on("SIGINT",  () => shutdown("SIGINT"));
+process.on("SIGTERM", () => apagarServidor("SIGTERM"));
+process.on("SIGINT",  () => apagarServidor("SIGINT"));
 
-export { app, httpServer };
+export { app, servidorHttp };
