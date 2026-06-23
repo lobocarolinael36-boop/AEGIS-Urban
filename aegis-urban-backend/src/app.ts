@@ -63,8 +63,8 @@ app.get("/api/health", async (_req: Request, res: Response) => {
 // ══════════════════════════════════════════════════════════════
 // RUTAS DE MÓDULOS (se irán agregando por sprint)
 // ══════════════════════════════════════════════════════════════
-// Sprint 2: import rutaAuth from './modules/auth/auth.controller';
-//           app.use('/api/auth', rutaAuth);
+import rutaAuth from "./modules/auth/auth.controller";
+app.use("/api/auth", rutaAuth);
 
 
 // ══════════════════════════════════════════════════════════════
