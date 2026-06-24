@@ -59,7 +59,7 @@ INSERT INTO users (username, email, password_hash, id_family, is_active)
 VALUES (
     'admin',
     'admin@aegis.urban',
-    '$2b$12$GwNv5TU9UBqK5L1rS5rRaOVJCIHTlrh.RL8VxBJVG6Ym/uR5VcH3a',
+    '$2b$12$Vn75kDEHjtny3vbw4Ff50uNl/yxovS5gm3khy6kosx3UDLwV05s6.',
     1,
     TRUE
 ) ON CONFLICT (username) DO NOTHING;

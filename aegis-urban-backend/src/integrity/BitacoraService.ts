@@ -94,12 +94,11 @@ export class BitacoraService {
 
       // ── 5. Actualizar AUDIT_LOG_CONTROL (último DVV conocido, contador)
       await cliente.query(`
-        INSERT INTO audit_log_control (id_control, last_dvv, total_rows, updated_at)
-        VALUES (1, $1, 1, NOW())
-        ON CONFLICT (id_control) DO UPDATE
+        INSERT INTO audit_log_control (table_name, last_dvv, total_rows)
+        VALUES ('audit_log', $1, 1)
+        ON CONFLICT (table_name) DO UPDATE
           SET last_dvv   = EXCLUDED.last_dvv,
-              total_rows = audit_log_control.total_rows + 1,
-              updated_at = NOW()
+              total_rows = audit_log_control.total_rows + 1
       `, [dvv]);
 
       await cliente.query("COMMIT");

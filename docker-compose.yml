@@ -25,7 +25,7 @@ services:
       TZ:                        America/Argentina/Buenos_Aires
       PGTZ:                      America/Argentina/Buenos_Aires
     ports:
-      - "5433:5432"
+      - "5555:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       # Las migraciones en esta carpeta se ejecutan automáticamente

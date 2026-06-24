@@ -2,6 +2,7 @@ import { db } from "../../config/database";
 import { BCryptHasher } from "../../security/encryption/BCryptHasher";
 import { GestorJwt } from "./jwt.utils";
 import { UnauthorizedError, NotFoundError } from "../../shared/errors/AppError";
+import { eventBus, EVENTOS } from "../../core/events/EventBus";
 
 interface FilaUsuario {
   id_user:       number;
@@ -75,6 +76,14 @@ export class AuthService {
       "UPDATE users SET last_login = NOW() WHERE id_user = $1",
       [usuario.id_user]
     );
+
+    // 6. Emite evento para BitacoraHandler
+    void eventBus.emitir(EVENTOS.SESION_INICIADA, {
+      evento:    EVENTOS.SESION_INICIADA,
+      idUsuario: usuario.id_user,
+      username:  usuario.username,
+      ip:        direccionIp,
+    });
 
     return {
       token,

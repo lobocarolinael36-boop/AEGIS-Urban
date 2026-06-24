@@ -1,23 +1,140 @@
 .page {
   display: flex;
-  flex-direction: column;
   height: 100vh;
-  background: var(--color-bg-900);
+  overflow: hidden;
+  background: var(--color-bg);
 }
 
-.header {
-  padding: 1rem 1.5rem;
-  background: var(--color-bg-800);
-  border-bottom: 1px solid rgba(14,165,233,0.1);
-  flex-shrink: 0;
+.mapLayout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
 }
-.header h1 { font-size: 1.1rem; }
-.subtitle { font-size: 0.78rem; color: var(--color-slate); margin-top: 2px; }
+
+/* ── Header del mapa */
+.mapHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mapTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.mapSub {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin: 0.1rem 0 0;
+}
+
+.mapStats {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex-wrap: wrap;
+}
+
+.statBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+}
+
+.wsBadge {
+  font-size: 0.7rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+.wsOn  { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.wsOff { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+
+/* ── Contenedor mapa */
+.mapWrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
 
 .map {
-  flex: 1;
-  z-index: 1;
+  width: 100%;
+  height: 100%;
 }
 
-/* Oscurecer los tiles del mapa para que encaje con la paleta AEGIS */
-:global(.leaflet-tile-pane) { filter: invert(1) hue-rotate(200deg) brightness(0.65) saturate(0.7); }
+/* Override tile para apariencia oscura */
+:global(.leaflet-tile-pane) {
+  filter: invert(1) hue-rotate(200deg) brightness(0.65) saturate(0.7);
+}
+
+/* ── Panel sensor seleccionado */
+.sensorPanel {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 220px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.cerrarPanel {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.25rem;
+}
+.cerrarPanel:hover { color: var(--color-text); }
+
+.sensorPanel h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 1.5rem 0.25rem 0;
+  font-family: var(--font-mono, monospace);
+}
+
+.sensorNodo {
+  font-size: 0.75rem;
+  color: var(--color-cyan, #00d4ff);
+  margin: 0 0 0.75rem;
+}
+
+.sensorInfo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.sensorInfo span:nth-child(odd) {
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.sensorInfo span:nth-child(even) {
+  color: var(--color-text);
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+}

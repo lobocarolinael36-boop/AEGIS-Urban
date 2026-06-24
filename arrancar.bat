@@ -12,7 +12,7 @@ echo   AEGIS Urban - Arranque
 echo  =========================================
 echo.
 
-echo [1/4] Levantando PostgreSQL...
+echo [1/4] Levantando PostgreSQL en puerto 5555...
 docker compose up postgres -d
 if %errorlevel% neq 0 (
     echo.
@@ -24,10 +24,11 @@ if %errorlevel% neq 0 (
 )
 
 echo [2/4] Esperando que la BD este lista...
-timeout /t 6 /nobreak > nul
+timeout /t 8 /nobreak > nul
 
 echo [3/4] Cargando datos iniciales...
 docker exec -i aegis_postgres psql -U aegis_app_user -d aegis_urban_db < "%BACKEND%\database\seeds\001_initial_data.sql" > nul 2>&1
+docker exec -i aegis_postgres psql -U aegis_app_user -d aegis_urban_db < "%BACKEND%\database\seeds\002_sprint3_data.sql" > nul 2>&1
 echo  Datos iniciales OK (usuario: admin / Admin2026!)
 
 if not exist "%BACKEND%\node_modules" (
