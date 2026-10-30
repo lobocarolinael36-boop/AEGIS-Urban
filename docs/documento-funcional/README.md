@@ -7,7 +7,7 @@ Documento funcional del proyecto organizado en las cuatro etapas del ciclo de vi
 
 ## Páginas
 
-1. [Portada y equipo](00-portada.md)
+1. [Portada y autoría](00-portada.md)
 2. [Introducción, resumen ejecutivo y alcance](01-introduccion.md)
 3. [Etapa 1 — Análisis y factibilidad](02-etapa-1-analisis.md)
    - [1.1 Problema y objetivos](02-etapa-1-analisis.md#11-problema-y-objetivos)

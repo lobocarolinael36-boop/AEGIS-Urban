@@ -5,18 +5,12 @@
 **Sistema:** Advanced Emergency Geographic Intelligence System — Urban  
 **Versión del documento:** 1.0  
 **Fecha de organización:** 28/10/2026  
-**Estado del producto:** prototipo académico en desarrollo  
+**Estado del producto:** prototipo en desarrollo  
 **Ámbito:** apoyo a operaciones urbanas y simulación; no sustituye protocolos ni autoridad de emergencia.
 
-## Integrantes del grupo
+## Autoría
 
-| N.º | Integrante |
-|---|---|
-| 1 | Carolina Lobo |
-| 2 | Sabrina De Marco |
-| 3 | Maximiliano Chaparro |
-| 4 | Maximo Casanovas |
-| 5 | Melina Cullari |
+Proyecto de **Carolina Lobo**.
 
 ## Propósito
 
@@ -33,4 +27,4 @@ Describir qué problema atiende el sistema, quién lo usa, qué comportamiento s
 
 ## Lectores
 
-Equipo de desarrollo, operadores de prueba, docentes y responsables de evaluar requisitos, seguridad y experiencia de uso.
+Quienes desarrollan el sistema, operadores de prueba y responsables de evaluar requisitos, seguridad y experiencia de uso.

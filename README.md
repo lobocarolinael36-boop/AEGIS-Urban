@@ -9,14 +9,14 @@
 ![React](https://img.shields.io/badge/React-18-22E5FF?style=flat-square&logo=react&logoColor=white&labelColor=0B1220)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-8B5CF6?style=flat-square&logo=postgresql&logoColor=white&labelColor=0B1220)
 ![Tests](https://img.shields.io/badge/tests-50%20aprobados-19F5A0?style=flat-square&labelColor=0B1220)
-![Estado](https://img.shields.io/badge/estado-prototipo%20acad%C3%A9mico-FFB020?style=flat-square&labelColor=0B1220)
+![Estado](https://img.shields.io/badge/estado-prototipo-FFB020?style=flat-square&labelColor=0B1220)
 
-[Documentación](docs/README.md) · [Cómo levantarlo](#cómo-levantarlo) · [Modo ciudadano](#modo-ciudadano) · [Arquitectura](#arquitectura) · [Equipo](#equipo)
+[Documentación](docs/README.md) · [Cómo levantarlo](#cómo-levantarlo) · [Modo ciudadano](#modo-ciudadano) · [Arquitectura](#arquitectura) · [Autoría](#autoría)
 
 </div>
 
-**Proyecto:** Trabajo Integrador Final — Prácticas Profesionalizantes · Escuela Secundaria Técnica · Argentina · 2026
-**Estado:** prototipo académico en desarrollo. No reemplaza a los organismos oficiales: ante una emergencia real llamá al **911**, **100** (bomberos) o **103** (Defensa Civil).
+**Proyecto de Carolina Lobo** · Argentina · 2026
+**Estado:** prototipo en desarrollo. No reemplaza a los organismos oficiales: ante una emergencia real llamá al **911**, **100** (bomberos) o **103** (Defensa Civil).
 
 ---
 
@@ -215,31 +215,15 @@ Toda la documentación se lee directamente en GitHub, por páginas:
 
 ---
 
-## Equipo
+## Autoría
 
-| # | Rol | Responsabilidad principal |
-|---|---|---|
-| I1 | Product Owner y documentador QA | Carpeta de campo, criterios de aceptación, plan de pruebas |
-| I2 | Desarrollo frontend | React, mapa de ciudad, UI de alertas, i18n |
-| I3 | Desarrollo backend core | Node.js, patrones de diseño, API REST |
-| I4 | Seguridad y base de datos | PostgreSQL, AES/BCrypt, DVH/DVV, backups |
-| I5 | Integración full-stack y WebSockets | socket.io, integración, CI/CD, despliegue |
-
-### Planificación de referencia
-
-| Sprint | Fechas | Foco |
-|---|---|---|
-| 1 | 19/05 – 30/05/2026 | Fundamentos e infraestructura |
-| 2 | 02/06 – 13/06/2026 | Seguridad, autenticación y DVH/DVV |
-| 3 | 16/06 – 27/06/2026 | Patrones core y telemetría en tiempo real |
-| 4 | 30/06 – 11/07/2026 | UI de ciudad y motor de simulación |
-| 5 | 14/07 – 25/07/2026 | Pruebas, auditoría y entrega final |
+Proyecto de **Carolina Lobo**.
 
 ---
 
 <div align="center">
 
 *AEGIS Urban — Advanced Emergency Geographic Intelligence System*
-*Escuela Técnica Argentina — Prácticas Profesionalizantes 2026*
+*Proyecto de Carolina Lobo · 2026*
 
 </div>

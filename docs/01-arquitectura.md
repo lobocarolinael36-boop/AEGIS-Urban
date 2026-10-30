@@ -1,6 +1,6 @@
 # AEGIS Urban — Arquitectura del Sistema
 
-**Documento:** Carpeta de Campo — Sección 1: Arquitectura Técnica  
+**Documento:** Documentación — Sección 1: Arquitectura Técnica  
 **Versión:** 1.0 | **Fecha:** 17/05/2026
 
 ---
@@ -9,7 +9,7 @@
 
 | Componente | Elección | Justificación |
 |---|---|---|
-| **Backend** | Node.js + TypeScript + Express | Un solo lenguaje en todo el stack (TS), ecosistema npm compartido con el frontend, socket.io nativo para WebSockets (Observer), más accesible para un equipo junior |
+| **Backend** | Node.js + TypeScript + Express | Un solo lenguaje en todo el stack (TS), ecosistema npm compartido con el frontend, socket.io nativo para WebSockets (Observer), más fácil de aprender y de mantener |
 | **Base de Datos** | PostgreSQL 16 | Soporte nativo de particionamiento por rango (`PARTITION BY RANGE`), `jsonb`, índices parciales, y pg_cron para backups automáticos |
 | **Frontend** | React 18 + TypeScript + Vite | |
 

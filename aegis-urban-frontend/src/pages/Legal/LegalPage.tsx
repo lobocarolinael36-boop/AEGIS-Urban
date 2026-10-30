@@ -13,7 +13,7 @@ function Documento({ titulo, version, secciones }: { titulo: string; version: st
         <h1>{titulo}</h1>
         <p className={styles.meta}>Versión {version} · Argentina</p>
         <p className={styles.aviso} role="note">
-          Texto base del prototipo académico: pendiente de revisión legal antes de un uso real con público.
+          Texto base del prototipo: pendiente de revisión legal antes de un uso real con público.
         </p>
         {secciones.map((s) => (
           <section key={s.titulo}>
