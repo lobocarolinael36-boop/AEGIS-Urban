@@ -5,7 +5,7 @@
 AEGIS Urban es una plataforma de alerta temprana y apoyo a operaciones municipales ante amenazas climáticas. Reúne telemetría de sensores, alertas, mapa, simulación y planificación de evacuaciones, y ofrece a la ciudadanía una vista pública con clima real y aviso por ubicación.
 
 > [!IMPORTANT]
-> **Alcance del proyecto:** es un prototipo académico. No reemplaza a los organismos oficiales ni debe presentar lecturas de sensores o simulaciones como instrucciones oficiales de emergencia. Ante una emergencia real: **911**, **100** (bomberos) o **103** (Defensa Civil).
+> **Alcance del proyecto:** es un prototipo. No reemplaza a los organismos oficiales ni debe presentar lecturas de sensores o simulaciones como instrucciones oficiales de emergencia. Ante una emergencia real: **911**, **100** (bomberos) o **103** (Defensa Civil).
 
 ## Documento funcional
 
@@ -13,7 +13,7 @@ El documento funcional sigue el ciclo de vida del software, en etapas numeradas.
 
 | # | Página | Qué tiene |
 |---|---|---|
-| 0 | [Portada y equipo](documento-funcional/00-portada.md) | Identificación del proyecto, integrantes, propósito y convenciones |
+| 0 | [Portada y autoría](documento-funcional/00-portada.md) | Identificación del proyecto, autoría, propósito y convenciones |
 | 1 | [Introducción, resumen ejecutivo y alcance](documento-funcional/01-introduccion.md) | Contexto, objetivos, usuarios, alcance y límites |
 | 2 | [Etapa 1 — Análisis y factibilidad](documento-funcional/02-etapa-1-analisis.md) | 1.1 Problema y objetivos · 1.2 Contexto y actores · 1.3 Fuentes de alertas · 1.4 Factibilidades y alcance |
 | 3 | [Etapa 2 — Diseño y arquitectura](documento-funcional/03-etapa-2-diseno.md) | 2.1 Arquitectura · 2.2 Modelo de datos · 2.3 Requerimientos · 2.4 Roles y permisos · 2.5 Interfaz y experiencia ciudadana · 2.6 Seguridad y calidad |

@@ -1,15 +1,15 @@
 /**
  * Textos legales de AEGIS Urban.
  *
- * IMPORTANTE: son un texto base redactado para el prototipo académico (Argentina).
+ * IMPORTANTE: son un texto base redactado para el prototipo (Argentina).
  * Antes de un uso real con público deben ser revisados por un/a abogado/a.
  * Si se cambia el contenido, subir la versión (y la de aegis-urban-backend/src/config/legal.ts):
  * el registro rechaza versiones viejas y cada consentimiento queda asociado a la versión leída.
  */
 export const LEGAL = {
-  VERSION_TERMINOS:   "2026-10-30",
-  VERSION_PRIVACIDAD: "2026-10-30",
-  VERSION_UBICACION:  "2026-10-30",
+  VERSION_TERMINOS:   "2026-10-30.2",
+  VERSION_PRIVACIDAD: "2026-10-30.2",
+  VERSION_UBICACION:  "2026-10-30.2",
   EDAD_MINIMA:        18,
 } as const;
 
@@ -17,7 +17,7 @@ export interface SeccionLegal { titulo: string; parrafos: string[] }
 
 export const TERMINOS: SeccionLegal[] = [
   { titulo: "1. Qué es AEGIS Urban", parrafos: [
-    "AEGIS Urban es un prototipo académico de monitoreo y alerta temprana ante eventos climáticos y de emergencia en la ciudad. Muestra información del clima real (fuente: Open-Meteo) y avisos generados por sensores simulados con fines educativos.",
+    "AEGIS Urban es un prototipo de monitoreo y alerta temprana ante eventos climáticos y de emergencia en la ciudad. Muestra información del clima real (fuente: Open-Meteo) y avisos generados por sensores simulados con fines de demostración.",
   ]},
   { titulo: "2. No reemplaza a los organismos oficiales", parrafos: [
     "La información de la aplicación es orientativa. No reemplaza los avisos oficiales del Servicio Meteorológico Nacional, de Defensa Civil ni de los servicios de emergencia. Ante una emergencia real llamá al 911 (policía), 100 (bomberos), 107 (emergencias médicas) o 103 (Defensa Civil).",
@@ -44,7 +44,7 @@ export const TERMINOS: SeccionLegal[] = [
 export const PRIVACIDAD: SeccionLegal[] = [
   { titulo: "1. Responsable y marco legal", parrafos: [
     "Esta política se rige por la Ley 25.326 de Protección de los Datos Personales y su Decreto Reglamentario 1558/2001. El órgano de control es la Agencia de Acceso a la Información Pública (AAIP), que atiende denuncias y reclamos por incumplimientos de la ley: www.argentina.gob.ar/aaip.",
-    "Responsable del tratamiento: equipo del proyecto AEGIS Urban (Trabajo Integrador Final, Prácticas Profesionalizantes).",
+    "Responsable del tratamiento: Carolina Lobo, responsable del proyecto AEGIS Urban.",
   ]},
   { titulo: "2. Qué datos recolectamos", parrafos: [
     "Solo los mínimos necesarios: nombre de usuario, correo electrónico y contraseña (guardada cifrada de forma irreversible con BCrypt).",
