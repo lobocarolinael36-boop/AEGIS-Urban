@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Sidebar from "../../components/Layout/Sidebar";
 import { useWebSocket, LecturaTelemetria } from "../../hooks/useWebSocket";
@@ -21,14 +21,23 @@ interface SensorMapa {
   lon:              number;
   last_value?:      number;
   last_status?:     "OK" | "WARNING" | "CRITICAL";
+  last_reading_at?: string;
   sensor_unit:      string;
 }
 
+interface LecturaSensor {
+  value: number;
+  unit: string | null;
+  reading_status: string;
+  is_simulated: boolean;
+  recorded_at: string;
+}
+
 const COLOR_ESTADO: Record<string, string> = {
-  OK:       "#10b981",
-  WARNING:  "#f59e0b",
-  CRITICAL: "#ef4444",
-  default:  "#00d4ff",
+  OK:       "#19f5a0",
+  WARNING:  "#ffb020",
+  CRITICAL: "#ff4d6d",
+  default:  "#22e5ff",
 };
 
 const ICONO_TIPO: Record<string, string> = {
@@ -61,13 +70,40 @@ export default function CityMapPage() {
 
   const [sensores, setSensores]     = useState<SensorMapa[]>([]);
   const [seleccionado, setSeleccionado] = useState<SensorMapa | null>(null);
+  const [historial, setHistorial] = useState<LecturaSensor[]>([]);
+  const [cargandoHistorial, setCargandoHistorial] = useState(false);
+  const [errorHistorial, setErrorHistorial] = useState(false);
+  const [errorSensores, setErrorSensores] = useState(false);
 
   // Carga sensores desde la API
-  useEffect(() => {
-    api.get<{ sensores: SensorMapa[] }>("/sensores")
-      .then(r => setSensores(r.data.sensores))
-      .catch(() => {});
+  const cargarSensores = useCallback(async () => {
+    setErrorSensores(false);
+    try {
+      const respuesta = await api.get<{ sensores: SensorMapa[] }>("/sensores");
+      setSensores(respuesta.data.sensores);
+    } catch {
+      setErrorSensores(true);
+    }
   }, []);
+
+  useEffect(() => {
+    cargarSensores();
+  }, [cargarSensores]);
+
+  useEffect(() => {
+    if (!seleccionado) {
+      setHistorial([]);
+      return;
+    }
+    let vigente = true;
+    setCargandoHistorial(true);
+    setErrorHistorial(false);
+    api.get<{ lecturas: LecturaSensor[] }>(`/sensores/${seleccionado.id_sensor}/lecturas`)
+      .then(r => { if (vigente) setHistorial(r.data.lecturas.slice(0, 6)); })
+      .catch(() => { if (vigente) setErrorHistorial(true); })
+      .finally(() => { if (vigente) setCargandoHistorial(false); });
+    return () => { vigente = false; };
+  }, [seleccionado?.id_sensor]);
 
   // Inicializa Leaflet
   useEffect(() => {
@@ -108,6 +144,7 @@ export default function CityMapPage() {
       if (existente) {
         existente.setIcon(icono);
         existente.setPopupContent(popup);
+        existente.off("click").on("click", () => setSeleccionado(sensor));
       } else {
         const m = L.marker([sensor.lat, sensor.lon], { icon: icono })
           .addTo(map)
@@ -136,10 +173,27 @@ export default function CityMapPage() {
     // Actualiza estado local también
     setSensores(prev => prev.map(s =>
       s.id_sensor === lr.idSensor
-        ? { ...s, last_value: lr.valor, last_status: lr.estadoLectura }
+        ? { ...s, last_value: lr.valor, last_status: lr.estadoLectura, last_reading_at: lr.registradaEn }
         : s
     ));
   }, [ultimaLectura]);
+
+  useEffect(() => {
+    if (!ultimaLectura || seleccionado?.id_sensor !== ultimaLectura.idSensor) return;
+    setSeleccionado(prev => prev ? {
+      ...prev,
+      last_value: ultimaLectura.valor,
+      last_status: ultimaLectura.estadoLectura,
+      last_reading_at: ultimaLectura.registradaEn,
+    } : prev);
+    setHistorial(prev => [{
+      value: ultimaLectura.valor,
+      unit: ultimaLectura.unidad,
+      reading_status: ultimaLectura.estadoLectura,
+      is_simulated: ultimaLectura.esSimulada,
+      recorded_at: ultimaLectura.registradaEn,
+    }, ...prev.filter(item => item.recorded_at !== ultimaLectura.registradaEn)].slice(0, 6));
+  }, [ultimaLectura, seleccionado?.id_sensor]);
 
   const contadores = sensores.reduce(
     (acc, s) => {
@@ -161,13 +215,13 @@ export default function CityMapPage() {
             <p className={styles.mapSub}>Ciudad AEGIS — Buenos Aires</p>
           </div>
           <div className={styles.mapStats}>
-            <span className={styles.statBadge} style={{ color: "#10b981" }}>
+            <span className={styles.statBadge} style={{ color: "#19f5a0" }}>
               ● {contadores.OK ?? 0} OK
             </span>
-            <span className={styles.statBadge} style={{ color: "#f59e0b" }}>
+            <span className={styles.statBadge} style={{ color: "#ffb020" }}>
               ▲ {contadores.WARNING ?? 0} WARNING
             </span>
-            <span className={styles.statBadge} style={{ color: "#ef4444" }}>
+            <span className={styles.statBadge} style={{ color: "#ff4d6d" }}>
               ■ {contadores.CRITICAL ?? 0} CRITICAL
             </span>
             <span className={`${styles.wsBadge} ${conectado ? styles.wsOn : styles.wsOff}`}>
@@ -179,6 +233,12 @@ export default function CityMapPage() {
         {/* ── Mapa */}
         <div className={styles.mapWrapper}>
           <div ref={mapRef} className={styles.map} />
+
+          {errorSensores && <div className={styles.mapMessage} role="alert">
+            <strong>No se pudo cargar la red de sensores.</strong>
+            <span>El mapa base sigue disponible; los marcadores pueden estar incompletos.</span>
+            <button onClick={cargarSensores}>Reintentar</button>
+          </div>}
 
           {/* Panel lateral con sensor seleccionado */}
           {seleccionado && (
@@ -199,7 +259,26 @@ export default function CityMapPage() {
                     ? `${seleccionado.last_value} ${seleccionado.sensor_unit}`
                     : "—"}
                 </span>
+                <span>Última lectura</span>
+                <span>{seleccionado.last_reading_at
+                  ? new Date(seleccionado.last_reading_at).toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" })
+                  : "Sin datos"}</span>
               </div>
+              <section className={styles.historialSection} aria-label="Lecturas recientes del sensor">
+                <div className={styles.historialHeader}>
+                  <strong>Últimas 24 h</strong>
+                  <span>{historial.length} lecturas</span>
+                </div>
+                {cargandoHistorial ? <p className={styles.historialEmpty}>Cargando lecturas…</p>
+                  : errorHistorial ? <p className={styles.historialEmpty}>No se pudo cargar el historial.</p>
+                  : historial.length === 0 ? <p className={styles.historialEmpty}>Sin lecturas recientes.</p>
+                  : <ol className={styles.historialList}>{historial.map((lectura, i) => (
+                    <li key={`${lectura.recorded_at}-${i}`}>
+                      <span className={styles.historialValor}>{Number(lectura.value).toFixed(1)} {lectura.unit ?? seleccionado.sensor_unit}</span>
+                      <span className={styles.historialMeta}>{new Date(lectura.recorded_at).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })} · {lectura.reading_status}{lectura.is_simulated ? " · SIM" : ""}</span>
+                    </li>
+                  ))}</ol>}
+              </section>
             </div>
           )}
         </div>

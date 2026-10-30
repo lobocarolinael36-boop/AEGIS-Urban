@@ -10,6 +10,10 @@ const PaginaMapa       = lazy(() => import("../pages/CityMap/CityMapPage"));
 const PaginaSensores   = lazy(() => import("../pages/Sensors/SensorsPage"));
 const PaginaAlertas    = lazy(() => import("../pages/Alerts/AlertsPage"));
 const PaginaSimulacion = lazy(() => import("../pages/Simulation/SimulationPage"));
+const PaginaRegistro    = lazy(() => import("../pages/Register/RegisterPage"));
+const PaginaCiudadano   = lazy(() => import("../pages/Citizen/CitizenPage"));
+const PaginaTerminos    = lazy(() => import("../pages/Legal/LegalPage").then(m => ({ default: m.PaginaTerminos })));
+const PaginaPrivacidad  = lazy(() => import("../pages/Legal/LegalPage").then(m => ({ default: m.PaginaPrivacidad })));
 const PaginaAdmin      = lazy(() => import("../pages/Admin/AdminPage"));
 
 function CargadorPagina() {
@@ -23,7 +27,11 @@ function CargadorPagina() {
 
 function RutaPrivada({ children }: { children: React.ReactNode }) {
   const autenticado = useAuthStore((s) => s.autenticado);
-  return autenticado ? <>{children}</> : <Navigate to="/login" replace />;
+  const familia = useAuthStore((s) => s.usuario?.familia);
+  if (!autenticado) return <Navigate to="/login" replace />;
+  // Los ciudadanos solo ven su vista pública; nunca las pantallas de gestión.
+  if (familia === "CIUDADANO") return <Navigate to="/ciudadano" replace />;
+  return <>{children}</>;
 }
 
 export default function AppRouter() {
@@ -32,6 +40,10 @@ export default function AppRouter() {
       <Routes>
         {/* ── Pública */}
         <Route path="/login" element={<PaginaLogin />} />
+        <Route path="/registro" element={<PaginaRegistro />} />
+        <Route path="/ciudadano" element={<PaginaCiudadano />} />
+        <Route path="/terminos" element={<PaginaTerminos />} />
+        <Route path="/privacidad" element={<PaginaPrivacidad />} />
 
         {/* ── Privadas */}
         <Route path="/dashboard" element={

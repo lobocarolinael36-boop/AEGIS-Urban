@@ -1,7 +1,7 @@
 import { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 import { env } from "./env";
 
-type ParametrosConsulta = (string | number | boolean | null | Date | Buffer)[];
+type ParametrosConsulta = (string | number | boolean | null | Date | Buffer | number[])[];
 
 /**
  * DatabaseConnection — Patrón Singleton

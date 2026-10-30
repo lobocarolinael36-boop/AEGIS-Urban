@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { GestorJwt } from "./jwt.utils";
 import { UnauthorizedError } from "../../shared/errors/AppError";
+import { db } from "../../config/database";
 
 /**
  * requiereAutenticacion — Middleware que verifica el JWT en cada request protegido.
@@ -26,6 +27,16 @@ export async function requiereAutenticacion(
 
     if (await GestorJwt.estaRevocado(hashToken)) {
       throw new UnauthorizedError("Sesión cerrada. Iniciá sesión nuevamente.");
+    }
+
+    const usuarioActual = await db.consultar<{ id_family: number; usuario_activo: boolean; familia_activa: boolean }>(`
+      SELECT u.id_family, u.is_active AS usuario_activo, f.is_active AS familia_activa
+      FROM users u LEFT JOIN family f ON f.id_family = u.id_family
+      WHERE u.id_user = $1
+    `, [payload.sub]);
+    const registro = usuarioActual.rows[0];
+    if (!registro?.usuario_activo || !registro.familia_activa || registro.id_family !== payload.idFamilia) {
+      throw new UnauthorizedError("La cuenta o su familia está deshabilitada. Iniciá sesión nuevamente.");
     }
 
     req.user = {

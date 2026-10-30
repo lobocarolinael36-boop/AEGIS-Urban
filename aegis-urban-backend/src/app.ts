@@ -18,6 +18,9 @@ import rutaSensores   from "./modules/sensors/sensor.controller";
 import rutaTelemetry  from "./modules/telemetry/telemetry.controller";
 import rutaAlertas    from "./modules/alerts/alert.controller";
 import rutaAdmin      from "./modules/admin/admin.controller";
+import rutaSimulacion from "./modules/simulation/simulation.controller";
+import rutaPublico    from "./modules/public/public.controller";
+import { detenerEscenariosActivos } from "./modules/simulation/simulation.controller";
 
 const app: Application = express();
 const servidorHttp = createServer(app);
@@ -54,6 +57,8 @@ app.use("/api/sensores",  rutaSensores);
 app.use("/api/telemetry", rutaTelemetry);
 app.use("/api/alertas",   rutaAlertas);
 app.use("/api/admin",     rutaAdmin);
+app.use("/api/simulation", rutaSimulacion);
+app.use("/api/publico",   rutaPublico);
 
 // ── Manejo de errores ─────────────────────────────────────────────────────────
 app.use((_req: Request, res: Response) => {
@@ -87,6 +92,7 @@ servidorHttp.listen(env.PORT, async () => {
 const apagarServidor = async (senal: string) => {
   console.log(`\n[${senal}] Cerrando servidor...`);
   servidorHttp.close(async () => {
+    await detenerEscenariosActivos();
     await db.cerrar();
     console.log("Servidor cerrado correctamente.");
     process.exit(0);

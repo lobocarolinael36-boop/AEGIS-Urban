@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Sidebar from "../../components/Layout/Sidebar";
 import { useWebSocket } from "../../hooks/useWebSocket";
 import api from "../../services/api";
+import { useAuthStore } from "../../store/authStore";
 import styles from "./SensorsPage.module.css";
 
 interface Sensor {
@@ -40,8 +41,12 @@ function badgeEstado(estado: string | null) {
 
 export default function SensorsPage() {
   const { conectado, ultimaLectura } = useWebSocket();
+  const familia = useAuthStore(s => s.usuario?.familia);
+  const puedeSimular = familia === "ADMIN_SISTEMA" || familia === "DEFENSA_CIVIL";
   const [sensores, setSensores]      = useState<Sensor[]>([]);
   const [cargando, setCargando]      = useState(true);
+  const [errorCarga, setErrorCarga]  = useState(false);
+  const [errorAccion, setErrorAccion] = useState(false);
   const [filtroTipo, setFiltroTipo]  = useState<string>("TODOS");
   const [simulando, setSimulando]    = useState<number | null>(null);
   const [flash, setFlash]            = useState<Set<number>>(new Set());
@@ -50,6 +55,9 @@ export default function SensorsPage() {
     try {
       const res = await api.get<{ sensores: Sensor[] }>("/sensores");
       setSensores(res.data.sensores);
+      setErrorCarga(false);
+    } catch {
+      setErrorCarga(true);
     } finally {
       setCargando(false);
     }
@@ -75,8 +83,11 @@ export default function SensorsPage() {
 
   const simular = async (id: number) => {
     setSimulando(id);
+    setErrorAccion(false);
     try {
       await api.post(`/sensores/${id}/simular`);
+    } catch {
+      setErrorAccion(true);
     } finally {
       setSimulando(null);
     }
@@ -109,6 +120,13 @@ export default function SensorsPage() {
             <button onClick={cargarSensores} className={styles.refreshBtn} title="Actualizar">↻</button>
           </div>
         </header>
+
+        {(errorCarga || errorAccion) && <div className={styles.errorBanner} role="alert">
+          <span>{errorCarga ? "No se pudieron cargar los sensores." : "No se pudo registrar la lectura simulada."}</span>
+          <button onClick={errorCarga ? cargarSensores : () => setErrorAccion(false)}>
+            {errorCarga ? "Reintentar" : "Cerrar"}
+          </button>
+        </div>}
 
         {/* Resumen */}
         <div className={styles.resumenGrid}>
@@ -160,7 +178,7 @@ export default function SensorsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtrados.map(s => (
+                {filtrados.length === 0 ? <tr><td colSpan={6} className={styles.sinLectura}>No hay sensores para este filtro.</td></tr> : filtrados.map(s => (
                   <tr key={s.id_sensor} className={flash.has(s.id_sensor) ? styles.flashRow : ""}>
                     <td>
                       <span className={styles.tipoChip}>
@@ -179,18 +197,22 @@ export default function SensorsPage() {
                         <>
                           <span className={styles.lecturaVal}>{parseFloat(String(s.last_value)).toFixed(1)}</span>
                           <span className={styles.lecturaUnit}> {s.sensor_unit}</span>
+                          <small className={styles.lecturaTime}>{s.last_reading_at
+                            ? new Date(s.last_reading_at).toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" })
+                            : "Hora no disponible"}</small>
                         </>
-                      ) : "—"}
+                      ) : <span className={styles.sinLectura}>Sin lecturas</span>}
                     </td>
                     <td>
-                      <button
+                      {(s.status === "SIMULATED" || s.is_simulated) ? (puedeSimular ? <button
                         className={styles.simularBtn}
                         onClick={() => simular(s.id_sensor)}
                         disabled={simulando === s.id_sensor}
                         title="Forzar lectura simulada"
                       >
                         {simulando === s.id_sensor ? "…" : "⚡ Simular"}
-                      </button>
+                      </button> : <span className={styles.sinLectura}>Sólo roles autorizados</span>)
+                        : <span className={styles.sinLectura}>Sensor real</span>}
                     </td>
                   </tr>
                 ))}

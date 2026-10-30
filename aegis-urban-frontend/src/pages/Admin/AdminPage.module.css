@@ -1,4 +1,6 @@
 .page { display: flex; min-height: 100vh; background: var(--color-bg); }
+.errorBanner { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .7rem .85rem; border-radius: 8px; color: #fca5a5; background: rgba(255,77,109,.1); border: 1px solid rgba(255,77,109,.26); font-size: .78rem; }
+.errorBanner button { flex: 0 0 auto; padding: .4rem .65rem; color: inherit; border: 1px solid rgba(255,77,109,.3); border-radius: 6px; background: transparent; }
 .main { flex: 1; padding: 1.75rem 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
 
 .topbar { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
@@ -6,9 +8,9 @@
 .subtitle  { font-size: 0.78rem; color: var(--color-muted); margin: 0.2rem 0 0; }
 
 .btnIntegridad {
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.3);
-  color: #10b981;
+  background: rgba(25,245,160,0.08);
+  border: 1px solid rgba(25,245,160,0.3);
+  color: #19f5a0;
   padding: 0.55rem 1.1rem;
   border-radius: 8px;
   font-size: 0.82rem;
@@ -19,7 +21,7 @@
   align-self: flex-start;
   margin-top: 0.25rem;
 }
-.btnIntegridad:hover:not(:disabled) { background: rgba(16,185,129,0.16); }
+.btnIntegridad:hover:not(:disabled) { background: rgba(25,245,160,0.16); }
 .btnIntegridad:disabled { opacity: 0.5; cursor: default; }
 
 /* ── Tabs */
@@ -35,7 +37,7 @@
   transition: all 0.15s;
 }
 .tabBtn:hover  { border-color: var(--color-cyan); color: var(--color-cyan); }
-.tabBtnActive  { background: rgba(0,212,255,0.08); border-color: var(--color-cyan); color: var(--color-cyan); font-weight: 600; }
+.tabBtnActive  { background: rgba(34,229,255,0.08); border-color: var(--color-cyan); color: var(--color-cyan); font-weight: 600; }
 
 /* ── Tabla */
 .panelWrap {
@@ -69,14 +71,14 @@
   vertical-align: middle;
 }
 .tabla tr:last-child td { border-bottom: none; }
-.tabla tr:hover td { background: rgba(0,212,255,0.025); }
+.tabla tr:hover td { background: rgba(34,229,255,0.025); }
 
 .mono    { font-family: var(--font-mono, monospace); font-size: 0.78rem; color: var(--color-muted); }
 .muted   { color: var(--color-muted); }
 .negrita { font-weight: 600; }
 
 .estadoBadge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 4px; font-size: 0.69rem; font-weight: 700; }
-.estadoBadge--activo   { background: rgba(16,185,129,0.12); color: #10b981; }
+.estadoBadge--activo   { background: rgba(25,245,160,0.12); color: #19f5a0; }
 .estadoBadge--inactivo { background: rgba(148,163,184,0.1); color: #94a3b8; }
 
 .usuariosBadge {
@@ -85,20 +87,20 @@
   justify-content: center;
   min-width: 1.5rem;
   padding: 0.15rem 0.45rem;
-  background: rgba(0,212,255,0.08);
-  color: var(--color-cyan, #00d4ff);
+  background: rgba(34,229,255,0.08);
+  color: var(--color-cyan, #22e5ff);
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
 }
 
 /* ── Bitácora action tags */
-.actTag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; background: rgba(0,212,255,0.08); color: #00d4ff; }
-.actTag--USER_LOGIN             { background: rgba(16,185,129,0.1);  color: #10b981; }
+.actTag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; background: rgba(34,229,255,0.08); color: #22e5ff; }
+.actTag--USER_LOGIN             { background: rgba(25,245,160,0.1);  color: #19f5a0; }
 .actTag--USER_LOGOUT            { background: rgba(148,163,184,0.1); color: #94a3b8; }
-.actTag--ALERT_CREATED          { background: rgba(245,158,11,0.12); color: #f59e0b; }
-.actTag--EVACUATION_INITIATED   { background: rgba(239,68,68,0.1);   color: #ef4444; }
-.actTag--SENSOR_READING_ANOMALY { background: rgba(0,212,255,0.08);  color: #00d4ff; }
+.actTag--ALERT_CREATED          { background: rgba(255,176,32,0.12); color: #ffb020; }
+.actTag--EVACUATION_INITIATED   { background: rgba(255,77,109,0.1);   color: #ff4d6d; }
+.actTag--SENSOR_READING_ANOMALY { background: rgba(34,229,255,0.08);  color: #22e5ff; }
 
 /* ── Integridad */
 .integridadPanel {
@@ -129,16 +131,16 @@
   border-radius: 10px;
   border: 1px solid;
 }
-.integridadResultado--ok    { background: rgba(16,185,129,0.07); border-color: rgba(16,185,129,0.3); }
-.integridadResultado--error { background: rgba(239,68,68,0.07);  border-color: rgba(239,68,68,0.3); }
+.integridadResultado--ok    { background: rgba(25,245,160,0.07); border-color: rgba(25,245,160,0.3); }
+.integridadResultado--error { background: rgba(255,77,109,0.07);  border-color: rgba(255,77,109,0.3); }
 
 .integridadIcon {
   font-size: 2rem;
   font-weight: 900;
   line-height: 1;
 }
-.integridadResultado--ok    .integridadIcon { color: #10b981; }
-.integridadResultado--error .integridadIcon { color: #ef4444; }
+.integridadResultado--ok    .integridadIcon { color: #19f5a0; }
+.integridadResultado--error .integridadIcon { color: #ff4d6d; }
 
 .integridadVeredicto { font-size: 1rem; font-weight: 700; color: var(--color-text); }
 .integridadSub { font-size: 0.8rem; color: var(--color-muted); margin-top: 0.2rem; }
@@ -155,7 +157,7 @@
 .metaRow { display: flex; gap: 1rem; font-size: 0.82rem; align-items: baseline; }
 .metaKey { width: 9rem; flex-shrink: 0; color: var(--color-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .metaVal { color: var(--color-text); font-family: var(--font-mono, monospace); font-size: 0.8rem; }
-.metaVal--danger { color: #ef4444; }
+.metaVal--danger { color: #ff4d6d; }
 
 .integridadDesc {
   font-size: 0.8rem;
@@ -165,8 +167,8 @@
 .integridadDesc p { margin: 0; }
 .integridadDesc strong { color: var(--color-text); }
 .integridadDesc code {
-  background: rgba(0,212,255,0.08);
-  color: var(--color-cyan, #00d4ff);
+  background: rgba(34,229,255,0.08);
+  color: var(--color-cyan, #22e5ff);
   padding: 0.1rem 0.35rem;
   border-radius: 3px;
   font-size: 0.78rem;

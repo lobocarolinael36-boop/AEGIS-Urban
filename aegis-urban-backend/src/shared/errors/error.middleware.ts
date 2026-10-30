@@ -16,6 +16,11 @@ export function errorMiddleware(
     return;
   }
 
+  if ((err as NodeJS.ErrnoException).code === "ECONNREFUSED") {
+    res.status(503).json({ error: "Base de datos no disponible", code: "ServiceUnavailable" });
+    return;
+  }
+
   // Error inesperado — no exponer detalles en producción
   console.error("[ERROR NO MANEJADO]", err);
   res.status(500).json({

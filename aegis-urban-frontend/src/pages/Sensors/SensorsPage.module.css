@@ -4,6 +4,9 @@
   background: var(--color-bg);
 }
 
+.errorBanner { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .7rem .85rem; border: 1px solid rgba(255,77,109,.26); border-radius: 8px; color: #fca5a5; background: rgba(255,77,109,.1); font-size: .78rem; }
+.errorBanner button { padding: .4rem .65rem; color: inherit; border: 1px solid rgba(255,77,109,.3); border-radius: 6px; background: transparent; }
+
 .main {
   flex: 1;
   padding: 1.75rem 2rem;
@@ -26,7 +29,7 @@
 .subtitle  { font-size: 0.78rem; color: var(--color-muted); margin: 0.2rem 0 0; }
 .topbarRight { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem; }
 .wsBadge { font-size: 0.72rem; font-family: var(--font-mono, monospace); font-weight: 700; padding: 0.25rem 0.625rem; border-radius: 999px; letter-spacing: 0.04em; }
-.wsOn  { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.wsOn  { background: rgba(25,245,160,0.12); color: #19f5a0; border: 1px solid rgba(25,245,160,0.3); }
 .wsOff { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
 .refreshBtn { background: transparent; border: 1px solid var(--color-border); color: var(--color-muted); width: 2rem; height: 2rem; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .refreshBtn:hover { color: var(--color-cyan); border-color: var(--color-cyan); }
@@ -48,10 +51,10 @@
   flex-direction: column;
   gap: 0.2rem;
 }
-.resumenCard--ok       { border-color: rgba(16,185,129,0.22); }
-.resumenCard--warning  { border-color: rgba(245,158,11,0.22); }
-.resumenCard--critical { border-color: rgba(239,68,68,0.22); }
-.resumenCard--total    { border-color: rgba(0,212,255,0.22); }
+.resumenCard--ok       { border-color: rgba(25,245,160,0.22); }
+.resumenCard--warning  { border-color: rgba(255,176,32,0.22); }
+.resumenCard--critical { border-color: rgba(255,77,109,0.22); }
+.resumenCard--total    { border-color: rgba(34,229,255,0.22); }
 
 .resumenVal {
   font-size: 1.8rem;
@@ -59,10 +62,10 @@
   font-family: var(--font-mono, monospace);
   line-height: 1;
 }
-.resumenCard--ok       .resumenVal { color: #10b981; }
-.resumenCard--warning  .resumenVal { color: #f59e0b; }
-.resumenCard--critical .resumenVal { color: #ef4444; }
-.resumenCard--total    .resumenVal { color: var(--color-cyan, #00d4ff); }
+.resumenCard--ok       .resumenVal { color: #19f5a0; }
+.resumenCard--warning  .resumenVal { color: #ffb020; }
+.resumenCard--critical .resumenVal { color: #ff4d6d; }
+.resumenCard--total    .resumenVal { color: var(--color-cyan, #22e5ff); }
 
 .resumenLabel { font-size: 0.72rem; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 0.35rem; }
 
@@ -83,7 +86,7 @@
   transition: all 0.15s;
 }
 .filtroBtn:hover     { border-color: var(--color-cyan); color: var(--color-cyan); }
-.filtroBtnActive     { background: rgba(0,212,255,0.08); border-color: var(--color-cyan); color: var(--color-cyan); font-weight: 600; }
+.filtroBtnActive     { background: rgba(34,229,255,0.08); border-color: var(--color-cyan); color: var(--color-cyan); font-weight: 600; }
 
 /* ── Tabla */
 .panelWrap {
@@ -123,9 +126,9 @@
   vertical-align: middle;
 }
 .tabla tr:last-child td { border-bottom: none; }
-.tabla tr:hover td { background: rgba(0,212,255,0.03); }
+.tabla tr:hover td { background: rgba(34,229,255,0.03); }
 
-.flashRow td { background: rgba(0,212,255,0.06) !important; transition: background 0.5s; }
+.flashRow td { background: rgba(34,229,255,0.06) !important; transition: background 0.5s; }
 
 .tipoChip {
   display: inline-flex;
@@ -147,19 +150,21 @@
   font-weight: 700;
   letter-spacing: 0.04em;
 }
-.estadoBadge--ok       { background: rgba(16,185,129,0.12); color: #10b981; }
-.estadoBadge--warning  { background: rgba(245,158,11,0.12); color: #f59e0b; }
-.estadoBadge--critical { background: rgba(239,68,68,0.12);  color: #ef4444; }
+.estadoBadge--ok       { background: rgba(25,245,160,0.12); color: #19f5a0; }
+.estadoBadge--warning  { background: rgba(255,176,32,0.12); color: #ffb020; }
+.estadoBadge--critical { background: rgba(255,77,109,0.12);  color: #ff4d6d; }
 .estadoBadge--sin\ datos { background: rgba(148,163,184,0.1); color: #94a3b8; }
 
 .lecturaCell { font-family: var(--font-mono, monospace); white-space: nowrap; }
-.lecturaVal  { font-size: 0.9rem; font-weight: 700; color: var(--color-cyan, #00d4ff); }
+.lecturaVal  { font-size: 0.9rem; font-weight: 700; color: var(--color-cyan, #22e5ff); }
 .lecturaUnit { font-size: 0.72rem; color: var(--color-muted); }
+.lecturaTime { display: block; margin-top: .2rem; color: var(--color-muted); font: .62rem var(--font-mono); }
+.sinLectura { color: var(--color-muted); font-size: .72rem; }
 
 .simularBtn {
-  background: rgba(0,212,255,0.06);
-  border: 1px solid rgba(0,212,255,0.25);
-  color: var(--color-cyan, #00d4ff);
+  background: rgba(34,229,255,0.06);
+  border: 1px solid rgba(34,229,255,0.25);
+  color: var(--color-cyan, #22e5ff);
   padding: 0.3rem 0.75rem;
   border-radius: 5px;
   font-size: 0.75rem;
@@ -167,5 +172,5 @@
   transition: all 0.15s;
   white-space: nowrap;
 }
-.simularBtn:hover:not(:disabled) { background: rgba(0,212,255,0.15); }
+.simularBtn:hover:not(:disabled) { background: rgba(34,229,255,0.15); }
 .simularBtn:disabled { opacity: 0.5; cursor: default; }

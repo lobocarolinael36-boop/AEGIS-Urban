@@ -9,8 +9,6 @@ export class BitacoraHandler {
     if (this.inicializado) return;
 
     eventBus.suscribir<DatosLecturaNueva>(EVENTOS.LECTURA_NUEVA, this.manejarLectura.bind(this));
-    eventBus.suscribir(EVENTOS.ALERTA_CREADA,       this.manejarAlerta.bind(this));
-    eventBus.suscribir(EVENTOS.EVACUACION_INICIADA, this.manejarEvacuacion.bind(this));
     eventBus.suscribir(EVENTOS.SESION_INICIADA,     this.manejarSesion.bind(this));
     eventBus.suscribir(EVENTOS.SESION_CERRADA,      this.manejarSesion.bind(this));
 
@@ -32,32 +30,6 @@ export class BitacoraHandler {
           estadoLectura: datos.estadoLectura,
           tipoSensor:    datos.tipoSensor,
         },
-      });
-    } catch { /* no interrumpir flujo */ }
-  }
-
-  private async manejarAlerta(datos: Record<string, unknown>): Promise<void> {
-    try {
-      await bitacora.registrarEvento({
-        accion:       "ALERT_CREATED",
-        nombreEntidad: "alert",
-        idEntidad:    String(datos["idAlerta"]),
-        idUsuario:    null,
-        direccionIp:  "127.0.0.1",
-        valoresNuevos: datos,
-      });
-    } catch { /* no interrumpir flujo */ }
-  }
-
-  private async manejarEvacuacion(datos: Record<string, unknown>): Promise<void> {
-    try {
-      await bitacora.registrarEvento({
-        accion:       "EVACUATION_INITIATED",
-        nombreEntidad: "evacuation_plan",
-        idEntidad:    String(datos["idPlan"] ?? "0"),
-        idUsuario:    datos["idUsuario"] as number | null,
-        direccionIp:  String(datos["ip"] ?? "127.0.0.1"),
-        valoresNuevos: datos,
       });
     } catch { /* no interrumpir flujo */ }
   }

@@ -1,12 +1,13 @@
 .sidebar {
-  width: 220px;
-  min-width: 220px;
-  height: 100vh;
-  background: var(--color-surface);
+  width: 248px;
+  min-width: 248px;
+  height: 100dvh;
+  background: linear-gradient(180deg, rgba(10,16,32,0.78), rgba(6,10,20,0.88));
   border-right: 1px solid var(--color-border);
+  box-shadow: 1px 0 30px rgba(34,229,255,0.05);
   display: flex;
   flex-direction: column;
-  padding: 1.25rem 0;
+  padding: 1.35rem 0 1rem;
   position: sticky;
   top: 0;
   flex-shrink: 0;
@@ -37,23 +38,27 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.65rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   color: var(--color-muted);
   text-decoration: none;
   font-size: 0.875rem;
   transition: background 0.15s, color 0.15s;
   border-left: 3px solid transparent;
+  margin: 0.2rem 0.75rem;
+  border-radius: 0 9px 9px 0;
 }
 
 .navLink:hover {
-  background: var(--color-bg);
+  background: rgba(148, 163, 184, 0.08);
   color: var(--color-text);
 }
 
 .navLink.active {
   color: var(--color-cyan);
-  background: rgba(0, 212, 255, 0.06);
+  background: linear-gradient(90deg, rgba(34,229,255,0.16), rgba(34,229,255,0.02));
   border-left-color: var(--color-cyan);
+  box-shadow: -6px 0 18px -6px rgba(34,229,255,0.5);
+  text-shadow: 0 0 12px rgba(34,229,255,0.5);
 }
 
 .icono {
@@ -104,6 +109,56 @@
 /* ── Mobile: sidebar oculto por defecto ──────────────────────────────────────*/
 @media (max-width: 768px) {
   .sidebar {
-    display: none;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    position: fixed;
+    z-index: 1000;
+    inset: auto 0 0;
+    padding: 0.45rem 0 max(0.45rem, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-border);
+    border-right: 0;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(14px);
   }
+  .logo { display: none; }
+  .footer {
+    position: fixed;
+    right: .5rem;
+    bottom: calc(4.3rem + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: .35rem .5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .96);
+  }
+  .usuario, .username { display: none; }
+  .logoutBtn { padding: .38rem .65rem; font-size: .68rem; }
+  .navList {
+    display: flex;
+    justify-content: space-around;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.15rem;
+  }
+  .navList li { flex: 1 0 auto; }
+  .navLink {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    min-width: 4.25rem;
+    padding: 0.35rem 0.45rem;
+    margin: 0;
+    border: 0;
+    border-radius: 8px;
+    font-size: 0.65rem;
+  }
+  .navLink.active { border-left-color: transparent; }
+  .icono { font-size: 1.1rem; }
 }
+
+@media (max-width: 380px) {
+  .navLink { min-width: 3.7rem; font-size: 0.6rem; }
+  }
