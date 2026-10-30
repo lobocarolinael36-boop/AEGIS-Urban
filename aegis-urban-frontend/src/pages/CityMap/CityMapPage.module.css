@@ -59,7 +59,7 @@
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
 }
-.wsOn  { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.wsOn  { background: rgba(25,245,160,0.12); color: #19f5a0; border: 1px solid rgba(25,245,160,0.3); }
 .wsOff { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
 
 /* ── Contenedor mapa */
@@ -73,6 +73,9 @@
   width: 100%;
   height: 100%;
 }
+.mapMessage { position: absolute; z-index: 500; left: 1rem; bottom: 1rem; display: flex; flex-direction: column; gap: .35rem; max-width: min(380px, calc(100% - 2rem)); padding: .8rem .9rem; border-radius: 9px; border: 1px solid rgba(255,77,109,.3); background: rgba(15,23,42,.95); color: #fca5a5; font-size: .75rem; }
+.mapMessage span { color: var(--color-muted); }
+.mapMessage button { align-self: flex-start; margin-top: .15rem; padding: .4rem .6rem; color: var(--color-text); border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); font-size: .7rem; }
 
 /* Override tile para apariencia oscura */
 :global(.leaflet-tile-pane) {
@@ -84,7 +87,9 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 220px;
+  width: min(320px, calc(100vw - 2rem));
+  max-height: calc(100% - 2rem);
+  overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 10px;
@@ -117,7 +122,7 @@
 
 .sensorNodo {
   font-size: 0.75rem;
-  color: var(--color-cyan, #00d4ff);
+  color: var(--color-cyan, #22e5ff);
   margin: 0 0 0.75rem;
 }
 
@@ -137,4 +142,22 @@
   color: var(--color-text);
   font-family: var(--font-mono, monospace);
   font-weight: 600;
+}
+
+.historialSection { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--color-border); }
+.historialHeader { display: flex; justify-content: space-between; align-items: center; gap: .5rem; color: var(--color-text); font-size: .72rem; }
+.historialHeader span { color: var(--color-muted); font: .62rem var(--font-mono); }
+.historialList { list-style: none; margin-top: .5rem; display: flex; flex-direction: column; }
+.historialList li { display: flex; flex-direction: column; gap: .15rem; padding: .45rem 0; border-bottom: 1px solid var(--color-border); }
+.historialList li:last-child { border-bottom: 0; }
+.historialValor { color: var(--color-text); font: 600 .75rem var(--font-mono); }
+.historialMeta, .historialEmpty { color: var(--color-muted); font-size: .65rem; }
+.historialEmpty { margin-top: .65rem; }
+
+@media (max-width: 768px) {
+  .page { height: 100dvh; }
+  .mapHeader { padding: .65rem .8rem; }
+  .mapTitle { font-size: 1rem; }
+  .mapStats { gap: .45rem; font-size: .65rem; }
+  .sensorPanel { top: .6rem; right: .6rem; width: min(300px, calc(100vw - 1.2rem)); max-height: calc(100% - 1.2rem); }
 }

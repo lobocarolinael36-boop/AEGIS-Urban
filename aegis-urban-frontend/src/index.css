@@ -1,48 +1,59 @@
 /* ═══════════════════════════════════════════════════════════════
    AEGIS Urban — Design System
-   Paleta oficial:
-     Base/Fondo:          #0F172A  #1E293B  #334155
-     Identidad/Tech:      #0EA5E9  #6366F1  #F8FAFC  #94A3B8
-     Estados Críticos:    #EF4444  #F59E0B  #10B981
+   Paleta "cian neón + vidrio":
+     Base/Fondo:          #060A14  #0B1220  #16223A
+     Identidad/Tech:      #22E5FF  #8B5CF6  #F1F7FF  #8FA3C0
+     Estados Críticos:    #FF4D6D  #FFB020  #19F5A0
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Base / Fondos */
-  --color-bg-900:   #0F172A;
-  --color-bg-800:   #1E293B;
-  --color-bg-700:   #334155;
+  /* ── Base / Fondos (negro azulado profundo) */
+  --color-bg-900:   #060A14;
+  --color-bg-800:   #0B1220;
+  --color-bg-700:   #16223A;
 
-  /* ── Identidad / Tecnología */
-  --color-cyan:     #0EA5E9;
-  --color-indigo:   #6366F1;
-  --color-white:    #F8FAFC;
-  --color-slate:    #94A3B8;
+  /* ── Identidad / Tecnología (neón) */
+  --color-cyan:     #22E5FF;
+  --color-indigo:   #8B5CF6;
+  --color-white:    #F1F7FF;
+  --color-slate:    #8FA3C0;
 
-  /* ── Estados Críticos */
-  --color-danger:   #EF4444;
-  --color-warning:  #F59E0B;
-  --color-safe:     #10B981;
+  /* ── Estados Críticos (neón) */
+  --color-danger:   #FF4D6D;
+  --color-warning:  #FFB020;
+  --color-safe:     #19F5A0;
 
   /* ── Derivados útiles */
-  --color-cyan-dark:    #0284C7;
-  --color-indigo-dark:  #4F46E5;
-  --color-bg-overlay:   rgba(15, 23, 42, 0.85);
+  --color-cyan-dark:    #06B6D4;
+  --color-indigo-dark:  #7C3AED;
+  --color-bg-overlay:   rgba(6, 10, 20, 0.85);
+
+  /* Alias semánticos usados por las páginas y componentes.
+     --color-surface es vidrio translúcido: se ve el fondo con grilla detrás. */
+  --color-bg:           transparent;
+  --color-surface:      rgba(14, 22, 40, 0.58);
+  --color-surface-raised: rgba(22, 34, 58, 0.72);
+  --color-text:         var(--color-white);
+  --color-muted:        var(--color-slate);
+  --color-border:       rgba(120, 190, 255, 0.14);
+  --color-border-glow:  rgba(34, 229, 255, 0.35);
+  --glass-blur:         blur(14px) saturate(140%);
 
   /* ── Tipografía */
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
 
   /* ── Radios */
-  --radius-sm:  4px;
-  --radius-md:  8px;
-  --radius-lg:  12px;
-  --radius-xl:  16px;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
 
   /* ── Sombras */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
-  --shadow-glow-cyan:   0 0 20px rgba(14, 165, 233, 0.35);
-  --shadow-glow-indigo: 0 0 20px rgba(99, 102, 241, 0.35);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md:  0 8px 32px rgba(0,0,0,0.55);
+  --shadow-glow-cyan:   0 0 24px rgba(34, 229, 255, 0.45);
+  --shadow-glow-indigo: 0 0 24px rgba(139, 92, 246, 0.45);
 
   /* ── Transiciones */
   --transition-fast:   150ms ease;
@@ -66,9 +77,16 @@ body {
   background-color: var(--color-bg-900);
   color: var(--color-white);
   min-height: 100vh;
+  position: relative;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(34, 229, 255, 0.6);
+  outline-offset: 2px;
 }
 
 /* ── Scrollbar personalizado */
@@ -77,7 +95,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track { background: var(--color-bg-800); }
-::-webkit-scrollbar-thumb { background: var(--color-bg-700); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(34,229,255,0.25); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-slate); }
 
 /* ── Tipografía base */
@@ -112,11 +130,11 @@ input::placeholder, textarea::placeholder {
 }
 input:focus, textarea:focus, select:focus {
   border-color: var(--color-cyan);
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+  box-shadow: 0 0 0 3px rgba(34, 229, 255, 0.18);
 }
 input[type="password"]:focus {
   border-color: var(--color-indigo);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
 /* ── Botones base */
@@ -157,10 +175,10 @@ button:disabled {
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
-.badge--danger  { background: rgba(239,68,68,0.15);  color: var(--color-danger); }
-.badge--warning { background: rgba(245,158,11,0.15); color: var(--color-warning); }
-.badge--safe    { background: rgba(16,185,129,0.15); color: var(--color-safe); }
-.badge--cyan    { background: rgba(14,165,233,0.15); color: var(--color-cyan); }
+.badge--danger  { background: rgba(255,77,109,0.15);  color: var(--color-danger); }
+.badge--warning { background: rgba(255,176,32,0.15); color: var(--color-warning); }
+.badge--safe    { background: rgba(25,245,160,0.14); color: var(--color-safe); }
+.badge--cyan    { background: rgba(34,229,255,0.14); color: var(--color-cyan); }
 
 /* ── Loading spinner */
 .spinner {
@@ -173,6 +191,10 @@ button:disabled {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
 /* ── Suspense fallback */
 .page-loader {
   display: flex;
@@ -181,7 +203,55 @@ button:disabled {
   justify-content: center;
   min-height: 100vh;
   gap: 16px;
-  background: var(--color-bg-900);
+  background: transparent;
   color: var(--color-slate);
   font-size: 0.875rem;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Fondo ambiental: resplandores + grilla tipo radar (fijo)
+   ═══════════════════════════════════════════════════════════════ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 12% 0%,   rgba(34, 229, 255, 0.16), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 100% 20%, rgba(139, 92, 246, 0.17), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 50% 110%, rgba(34, 229, 255, 0.10), transparent 70%),
+    linear-gradient(rgba(120, 190, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 190, 255, 0.045) 1px, transparent 1px);
+  background-size: auto, auto, auto, 44px 44px, 44px 44px;
+}
+
+/* ── Efecto vidrio (blur) para tarjetas y paneles de todas las páginas */
+[class*="_panel_"], [class*="_card_"], [class*="_statCard_"], [class*="_resumenCard_"],
+[class*="_quickAction_"], [class*="_sidebar_"], [class*="_empty_"] {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+[class*="_panel_"], [class*="_statCard_"], [class*="_resumenCard_"], [class*="_quickAction_"] {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal), transform var(--transition-fast);
+}
+[class*="_panel_"]:hover, [class*="_statCard_"]:hover, [class*="_resumenCard_"]:hover {
+  border-color: var(--color-border-glow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 6px 28px rgba(0, 0, 0, 0.4), 0 0 18px rgba(34, 229, 255, 0.12);
+}
+
+/* ── Valores numéricos alineados */
+[class*="_statValue_"], [class*="_actTime_"], [class*="_updatedAt_"] { font-variant-numeric: tabular-nums; }
+
+/* ── Mapa Leaflet en modo oscuro (invierte los tiles de OSM) */
+.leaflet-tile-pane { filter: invert(1) hue-rotate(188deg) brightness(0.82) contrast(0.92) saturate(0.55); }
+.leaflet-container { background: var(--color-bg-900); }
+.leaflet-bar a { background: var(--color-surface-raised); color: var(--color-white); border-color: var(--color-border); }
+.leaflet-control-attribution { background: rgba(6,10,20,0.7) !important; color: var(--color-slate) !important; }
+.leaflet-control-attribution a { color: var(--color-cyan) !important; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--color-surface-raised); color: var(--color-white); border: 1px solid var(--color-border); }
+
+/* ── Pulso para estados críticos (usar con className="pulse-danger") */
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(255,77,109,0.55); } 100% { box-shadow: 0 0 0 14px rgba(255,77,109,0); } }
+.pulse-danger { animation: pulse-ring 1.8s ease-out infinite; }

@@ -1,0 +1,13 @@
+.fondo { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 1rem; background: radial-gradient(circle at 50% 40%, rgba(255,77,109,.35), rgba(30,0,8,.94) 70%); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: entra .25s ease-out; }
+.caja { width: 100%; max-width: 440px; text-align: center; padding: 2rem 1.5rem; border-radius: var(--radius-xl); background: rgba(40, 6, 16, .85); border: 2px solid var(--color-danger); box-shadow: 0 0 60px rgba(255,77,109,.55), inset 0 0 30px rgba(255,77,109,.15); animation: latido 1.6s ease-in-out infinite; }
+.icono { font-size: 3.5rem; line-height: 1; color: var(--color-danger); text-shadow: 0 0 24px var(--color-danger); }
+.caja h2 { margin: .75rem 0 .5rem; font-size: 1.5rem; color: #fff; -webkit-text-fill-color: #fff; }
+.mensaje { font-size: 1rem; line-height: 1.5; color: var(--color-text); }
+.brujula { width: 84px; height: 84px; margin: 1.25rem auto .5rem; border-radius: 50%; border: 2px solid var(--color-danger); display: grid; place-items: center; }
+.brujula span { font-size: 2.6rem; line-height: 1; color: var(--color-danger); transition: transform .4s ease; }
+.dato { font: .75rem var(--font-mono); color: var(--color-muted); margin-bottom: 1rem; }
+.emergencia { font-size: .8rem; color: var(--color-muted); margin-bottom: 1.25rem; }
+.boton { width: 100%; padding: .9rem 1rem; font-size: .95rem; color: #fff; background: var(--color-danger); border-radius: var(--radius-md); box-shadow: 0 4px 24px rgba(255,77,109,.5); }
+.boton:hover { filter: brightness(1.1); }
+@keyframes entra { from { opacity: 0; } to { opacity: 1; } }
+@keyframes latido { 50% { box-shadow: 0 0 90px rgba(255,77,109,.8), inset 0 0 30px rgba(255,77,109,.2); } }

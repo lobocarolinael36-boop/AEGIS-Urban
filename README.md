@@ -5,7 +5,7 @@
 
 **Proyecto:** Trabajo Integrador Final — Prácticas Profesionalizantes  
 **Institución:** Escuela Secundaria Técnica | Argentina | 2026  
-**Estado:** En desarrollo activo — Sprint 1
+**Estado:** Prototipo académico en desarrollo; consultar [estado funcional](docs/documento-funcional/04-etapa-3-implementacion.md) y su [índice por etapas](docs/documento-funcional/README.md).
 
 ---
 
@@ -31,7 +31,7 @@ AEGIS Urban es un sistema de gestión de emergencias para ciudades inteligentes 
 | **Base de Datos** | PostgreSQL 16 | Particionamiento RANGE nativo, jsonb, índices parciales |
 | **Real-time** | socket.io | Implementación del patrón Observer para alertas |
 | **Contenedores** | Docker + Docker Compose | Entorno reproducible para todo el equipo |
-| **CI/CD** | GitHub Actions | Build y test automático en cada push |
+| **CI/CD** | GitHub Actions | Hay workflows en `.github/`; confirmar estado de cada pipeline |
 
 ---
 
@@ -47,33 +47,22 @@ AEGIS Urban es un sistema de gestión de emergencias para ciudades inteligentes 
 
 ---
 
-## Patrones de Diseño Implementados
+## Patrones y componentes del dominio
 
 | Patrón | Clase Clave | Ubicación | Propósito |
 |---|---|---|---|
-| **Singleton** | `EmergencyKernel` | `src/core/singleton/` | Núcleo único de despacho del sistema |
-| **Factory Method** | `SensorFactory` | `src/core/factory/` | Instancia `FloodSensor`, `FireSensor`, etc. según tipo |
-| **Observer** | `EventBus` + `IObserver` | `src/core/observer/` | Propagación de eventos: lectura crítica → alerta → WS |
-| **Strategy** | `EvacuationContext` | `src/core/strategy/` | Intercambia algoritmos de ruta en runtime |
-| **Composite** | `CityComposite` / `FamilyComposite` | `src/core/composite/` | Jerarquía Ciudad + Control de acceso Patentes/Familias |
+| **Factory** | `SensorFactory` | `aegis-urban-backend/src/core/factory/` | Selección de sensores por tipo |
+| **Observer** | `EventBus` y handlers | `aegis-urban-backend/src/core/events/` | Propagación de lecturas, alertas y bitácora |
+| **Strategy** | `ContextoEvacuacion` y estrategias | `aegis-urban-backend/src/core/strategies/` | Selección de estrategia de evacuación |
+| **Composite** | `FamilyComposite` | `aegis-urban-backend/src/core/composite/` | Agrupación de permisos |
 
 ---
 
-## Requerimientos de la Cátedra Implementados
+## Capacidades y componentes
 
-- [x] Autenticación por tokens JWT
-- [x] Encriptación reversible AES-256-CBC (datos sensibles)
-- [x] Encriptación irreversible BCrypt (contraseñas)
-- [x] Control de acceso Patentes/Familias (Composite)
-- [x] DVH + DVV en tabla `AUDIT_LOG` (integridad criptográfica)
-- [x] Bitácora inmutable (sin UPDATE/DELETE permitido)
-- [x] Backup automatizado + Restore (pg_dump + node-cron)
-- [x] Particionamiento de `SENSOR_READING` por RANGE(fecha)
-- [x] Lazy Loading en mapa de ciudad (React.lazy)
-- [x] Caché de requests en frontend
-- [x] Internacionalización Español / Inglés (i18next)
-- [x] Menús de ayuda contextual (HelpTooltip)
-- [x] Mocking Engine para simulación de catástrofes
+El repositorio contiene autenticación JWT, helpers AES/BCrypt, el modelo Composite de familias/permisos, cálculo DVH/DVV y restricciones de sólo inserción para la bitácora. También incluye particionamiento trimestral de `sensor_reading`, carga diferida de páginas, traducciones base e inyección periódica de lecturas simuladas.
+
+La presencia de estos componentes no garantiza por sí sola su integración completa en todas las rutas o flujos. El backup/restore automatizado, la caché de requests, la ayuda contextual y la pantalla de auditoría siguen pendientes. Ver el [backlog funcional](docs/documento-funcional/06-anexos.md).
 
 ---
 
@@ -81,12 +70,13 @@ AEGIS Urban es un sistema de gestión de emergencias para ciudades inteligentes 
 
 | Documento | Contenido |
 |---|---|
-| [📁 Arquitectura, DER y DVH/DVV](docs/01-arquitectura.md) | Estructura de carpetas backend/frontend, Modelo Entidad-Relación, lógica y código DVH/DVV |
-| [📋 Análisis, Diseño y Planificación](docs/02-analisis-diseno.md) | Casos de uso, diagrama de clases, sprints, matriz Patentes/Familias |
+| [📚 Documentación funcional](docs/README.md) | Documento por etapas, requisitos, datos, aceptación y backlog |
+| [📁 Arquitectura](docs/01-arquitectura.md) | Carpetas, modelo de datos y decisiones técnicas |
+| [📋 Análisis y diseño original](docs/02-analisis-diseno.md) | Casos de uso, diagramas y matriz de permisos |
 
 ---
 
-## Planificación (10 Semanas)
+## Planificación de referencia
 
 | Sprint | Fechas | Foco |
 |---|---|---|
@@ -103,10 +93,15 @@ AEGIS Urban es un sistema de gestión de emergencias para ciudades inteligentes 
 ```
 AEGIS-Urban/
 ├── docs/                        # Documentación del proyecto
-│   ├── 01-arquitectura.md       # Arquitectura, DER, DVH/DVV
-│   └── 02-analisis-diseno.md   # Casos de uso, clases, sprints, permisos
-├── aegis-urban-backend/         # Backend Node.js + TypeScript (Sprint 1→)
-├── aegis-urban-frontend/        # Frontend React + TypeScript (Sprint 1→)
+│   ├── documento-funcional/     # Análisis, diseño, implementación y release
+│   ├── 01-arquitectura.md       # Arquitectura y datos
+│   └── 02-analisis-diseno.md    # Análisis original y permisos
+├── aegis-urban-backend/
+│   ├── database/migrations/     # Cambios versionados del esquema SQL
+│   ├── database/seeds/          # Datos iniciales y de ejemplo
+│   └── src/                     # API, dominio, seguridad e integridad
+├── aegis-urban-frontend/        # páginas, componentes, servicios y estilos
+├── docker-compose.yml           # servicios del entorno local
 └── README.md
 ```
 

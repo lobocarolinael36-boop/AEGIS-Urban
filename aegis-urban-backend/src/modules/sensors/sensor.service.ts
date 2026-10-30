@@ -55,7 +55,7 @@ export class SensorService {
 
   async obtenerUltimas24h(idSensor: number, limite = 100): Promise<unknown[]> {
     const { rows } = await db.consultar(
-      `SELECT value, unit, reading_status, recorded_at
+      `SELECT value, unit, reading_status, is_simulated, recorded_at
        FROM sensor_reading
        WHERE id_sensor = $1
          AND recorded_at >= NOW() - INTERVAL '24 hours'

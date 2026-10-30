@@ -16,7 +16,6 @@ export interface EntradaAudit {
   action:       string;
   entity_name:  string;
   entity_id:    string;
-  ip_address:   string;
   created_at:   string;
 }
 
@@ -54,9 +53,10 @@ export class TelemetryService {
 
   async actividadReciente(limite = 10): Promise<EntradaAudit[]> {
     const { rows } = await db.consultar<EntradaAudit>(`
-      SELECT id_log::text, action, entity_name, entity_id, ip_address,
-             to_char(created_at AT TIME ZONE 'America/Argentina/Buenos_Aires', 'DD/MM HH24:MI') AS created_at
+      SELECT id_log::text, action, entity_name, entity_id, created_at
       FROM audit_log
+      WHERE action IN ('SENSOR_READING_ANOMALY', 'ALERT_CREATED', 'ALERT_ACKNOWLEDGED',
+                       'ALERT_RESOLVED', 'EVACUATION_INITIATED')
       ORDER BY id_log DESC
       LIMIT $1
     `, [limite]);

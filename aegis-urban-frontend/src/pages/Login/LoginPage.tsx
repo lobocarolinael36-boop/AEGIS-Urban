@@ -1,4 +1,5 @@
-import React, { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import styles from "./LoginPage.module.css";
@@ -110,6 +111,11 @@ export default function LoginPage() {
             )}
           </button>
         </form>
+
+        <p className={styles.altLinks}>
+          <Link to="/registro">Crear cuenta</Link>
+          <Link to="/ciudadano">Ver como ciudadano</Link>
+        </p>
 
         {/* ── Pie */}
         <footer className={styles.footer}>

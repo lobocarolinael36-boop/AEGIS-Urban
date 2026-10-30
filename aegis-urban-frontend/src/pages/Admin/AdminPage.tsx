@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { Navigate } from "react-router-dom";
 import Sidebar from "../../components/Layout/Sidebar";
 import api from "../../services/api";
+import { useAuthStore } from "../../store/authStore";
 import styles from "./AdminPage.module.css";
 
 interface Usuario {
@@ -46,20 +48,27 @@ const ACCION_LABEL: Record<string, string> = {
   USER_LOGOUT:              "Sesión cerrada",
   SENSOR_READING_ANOMALY:   "Anomalía",
   ALERT_CREATED:            "Alerta creada",
-  EVACUATION_INITIATED:     "Evacuación",
+  ALERT_ACKNOWLEDGED:       "Alerta reconocida",
+  ALERT_RESOLVED:           "Alerta resuelta",
+  EVACUATION_INITIATED:     "Evacuación iniciada",
 };
 
 export default function AdminPage() {
-  const [tab, setTab]             = useState<Tab>("usuarios");
+  const familiaUsuario = useAuthStore(s => s.usuario?.familia);
+  const esAdministrador = familiaUsuario === "ADMIN_SISTEMA";
+  const esAuditor = familiaUsuario === "AUDITOR";
+  const [tab, setTab]             = useState<Tab>(esAuditor && !esAdministrador ? "bitacora" : "usuarios");
   const [usuarios, setUsuarios]   = useState<Usuario[]>([]);
   const [familias, setFamilias]   = useState<Familia[]>([]);
   const [bitacora, setBitacora]   = useState<EntradaBitacora[]>([]);
   const [integridad, setIntegridad] = useState<ResultadoIntegridad | null>(null);
   const [cargando, setCargando]   = useState(false);
   const [verificando, setVerificando] = useState(false);
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
 
   const cargarTab = useCallback(async (t: Tab) => {
     setCargando(true);
+    setErrorCarga(null);
     try {
       if (t === "usuarios") {
         const res = await api.get<{ usuarios: Usuario[] }>("/admin/usuarios");
@@ -71,30 +80,41 @@ export default function AdminPage() {
         const res = await api.get<{ entradas: EntradaBitacora[] }>("/admin/bitacora?limite=30");
         setBitacora(res.data.entradas);
       }
+    } catch {
+      setErrorCarga("No se pudieron cargar estos datos. Revisá la conexión o tus permisos e intentá de nuevo.");
     } finally {
       setCargando(false);
     }
   }, []);
 
-  useEffect(() => { cargarTab(tab); }, [tab, cargarTab]);
+  useEffect(() => {
+    if (esAdministrador || esAuditor) cargarTab(tab);
+  }, [tab, cargarTab, esAdministrador, esAuditor]);
 
   const verificarIntegridad = async () => {
     setVerificando(true);
+    setTab("integridad");
     try {
       const res = await api.get<{ integridad: ResultadoIntegridad }>("/admin/integridad");
       setIntegridad(res.data.integridad);
       setTab("integridad");
+      setErrorCarga(null);
+    } catch {
+      setErrorCarga("No se pudo verificar la bitácora. Revisá la conexión o tus permisos e intentá de nuevo.");
     } finally {
       setVerificando(false);
     }
   };
 
-  const tabs: { id: Tab; label: string }[] = [
+  const tabsBase: { id: Tab; label: string }[] = [
     { id: "usuarios",   label: "Usuarios" },
     { id: "familias",   label: "Familias" },
     { id: "bitacora",   label: "Bitácora" },
     { id: "integridad", label: "Integridad DVH/DVV" },
   ];
+  const tabs = tabsBase.filter((t: { id: Tab; label: string }) => esAdministrador || (esAuditor && (t.id === "bitacora" || t.id === "integridad")));
+
+  if (!esAdministrador && !esAuditor) return <Navigate to="/dashboard" replace />;
 
   return (
     <div className={styles.page}>
@@ -126,6 +146,11 @@ export default function AdminPage() {
             </button>
           ))}
         </div>
+
+        {errorCarga && <div className={styles.errorBanner} role="alert">
+          <span>{errorCarga}</span>
+          <button onClick={() => tab === "integridad" ? verificarIntegridad() : cargarTab(tab)}>Reintentar</button>
+        </div>}
 
         {/* ── Usuarios */}
         {tab === "usuarios" && (

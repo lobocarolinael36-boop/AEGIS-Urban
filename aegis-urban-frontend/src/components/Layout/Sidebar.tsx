@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
@@ -18,6 +17,8 @@ export default function Sidebar() {
   const { t }           = useTranslation();
   const { cerrarSesion } = useAuth();
   const usuario          = useAuthStore((s) => s.usuario);
+  const puedeSimular = usuario?.familia === "ADMIN_SISTEMA" || usuario?.familia === "DEFENSA_CIVIL";
+  const puedeAdministrar = usuario?.familia === "ADMIN_SISTEMA" || usuario?.familia === "AUDITOR";
 
   return (
     <nav className={styles.sidebar}>
@@ -31,7 +32,9 @@ export default function Sidebar() {
       </div>
 
       <ul className={styles.navList}>
-        {NAV_LINKS.map(({ href, icono, clave }) => (
+        {NAV_LINKS.filter(({ href }) =>
+          (href !== "/simulacion" || puedeSimular) && (href !== "/admin" || puedeAdministrar)
+        ).map(({ href, icono, clave }) => (
           <li key={href}>
             <NavLink
               to={href}

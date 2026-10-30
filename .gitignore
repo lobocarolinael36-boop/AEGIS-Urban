@@ -55,3 +55,6 @@ ehthumbs.db
 
 # ── Vitest ────────────────────────────────────────────────
 vitest.config.ts.timestamp*
+
+# Respaldos locales de la BD
+/backups/

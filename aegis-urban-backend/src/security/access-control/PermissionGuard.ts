@@ -33,8 +33,7 @@ export function requierePermiso(recurso: string, metodo: string) {
         throw new ForbiddenError("Usuario no autenticado");
       }
 
-      const arbol    = await construirArbolFamilias(req.user.familyId);
-      const permitido = arbol.tienePermiso(recurso, metodo);
+      const permitido = await familiaTienePermiso(req.user.familyId, recurso, metodo);
 
       if (!permitido) {
         throw new ForbiddenError(
@@ -47,6 +46,11 @@ export function requierePermiso(recurso: string, metodo: string) {
       next(err);
     }
   };
+}
+
+export async function familiaTienePermiso(idFamilia: number, recurso: string, metodo: string): Promise<boolean> {
+  const arbol = await construirArbolFamilias(idFamilia);
+  return arbol.tienePermiso(recurso, metodo);
 }
 
 /**

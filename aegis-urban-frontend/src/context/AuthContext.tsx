@@ -2,9 +2,17 @@ import React, { createContext, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import api, { RespuestaLogin } from "../services/api";
+import { useUbicacionStore } from "../store/ubicacionStore";
+
+export interface DatosRegistro {
+  username: string; email: string; password: string;
+  aceptaTerminos: boolean; aceptaPrivacidad: boolean; declaraEdad: boolean; aceptaUbicacion: boolean;
+  versionTerminos: string; versionPrivacidad: string;
+}
 
 interface ValorContextoAuth {
   iniciarSesion: (username: string, contrasena: string) => Promise<void>;
+  registrar:     (datos: DatosRegistro) => Promise<void>;
   cerrarSesion:  () => Promise<void>;
 }
 
@@ -25,7 +33,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
       data.token
     );
-    navegar("/dashboard", { replace: true });
+    navegar(data.user.familyName === "CIUDADANO" ? "/ciudadano" : "/dashboard", { replace: true });
+  }, [establecerSesion, navegar]);
+
+  const registrar = useCallback(async (datos: DatosRegistro) => {
+    const { data } = await api.post<RespuestaLogin & { ubicacionConsentida: boolean }>("/auth/registro", datos);
+    establecerSesion(
+      { id: data.user.id, username: data.user.username, idFamilia: data.user.familyId, familia: data.user.familyName },
+      data.token
+    );
+    // El permiso de ubicación quedó registrado en el servidor; lo reflejamos en este dispositivo.
+    useUbicacionStore.getState().fijarConsentimiento(data.ubicacionConsentida);
+    navegar("/ciudadano", { replace: true });
   }, [establecerSesion, navegar]);
 
   const cerrarSesion = useCallback(async () => {
@@ -40,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [token, limpiarSesion, navegar]);
 
   return (
-    <ContextoAuth.Provider value={{ iniciarSesion, cerrarSesion }}>
+    <ContextoAuth.Provider value={{ iniciarSesion, registrar, cerrarSesion }}>
       {children}
     </ContextoAuth.Provider>
   );

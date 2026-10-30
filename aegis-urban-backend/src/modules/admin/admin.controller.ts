@@ -2,11 +2,12 @@ import { Router, Request, Response } from "express";
 import { db } from "../../config/database";
 import { requiereAutenticacion } from "../auth/auth.middleware";
 import { bitacora } from "../../integrity/BitacoraService";
+import { requierePermiso } from "../../security/access-control/PermissionGuard";
 
 const router = Router();
 
 // GET /api/admin/usuarios — lista usuarios con info de familia
-router.get("/usuarios", requiereAutenticacion, async (_req: Request, res: Response) => {
+router.get("/usuarios", requiereAutenticacion, requierePermiso("/api/admin/usuarios", "GET"), async (_req: Request, res: Response) => {
   const { rows } = await db.consultar(`
     SELECT u.id_user, u.username, u.email, u.is_active,
            u.created_at, u.last_login,
@@ -19,7 +20,7 @@ router.get("/usuarios", requiereAutenticacion, async (_req: Request, res: Respon
 });
 
 // GET /api/admin/familias — lista familias
-router.get("/familias", requiereAutenticacion, async (_req: Request, res: Response) => {
+router.get("/familias", requiereAutenticacion, requierePermiso("/api/admin/familias", "GET"), async (_req: Request, res: Response) => {
   const { rows } = await db.consultar(`
     SELECT f.id_family, f.name, f.description, f.is_active, f.created_at,
            COUNT(u.id_user)::int AS total_usuarios
@@ -32,7 +33,7 @@ router.get("/familias", requiereAutenticacion, async (_req: Request, res: Respon
 });
 
 // GET /api/admin/integridad — verifica DVH/DVV de la bitácora
-router.get("/integridad", requiereAutenticacion, async (_req: Request, res: Response) => {
+router.get("/integridad", requiereAutenticacion, requierePermiso("/api/admin/integridad", "GET"), async (_req: Request, res: Response) => {
   const { rows: countRows } = await db.consultar<{ total: string }>(
     "SELECT COUNT(*) AS total FROM audit_log"
   );
@@ -50,7 +51,7 @@ router.get("/integridad", requiereAutenticacion, async (_req: Request, res: Resp
 });
 
 // GET /api/admin/bitacora — últimas entradas del audit log
-router.get("/bitacora", requiereAutenticacion, async (req: Request, res: Response) => {
+router.get("/bitacora", requiereAutenticacion, requierePermiso("/api/admin/bitacora", "GET"), async (req: Request, res: Response) => {
   const limite = Math.min(parseInt(String(req.query.limite ?? "20")), 100);
   const { rows } = await db.consultar(`
     SELECT id_log, action, entity_name, entity_id,
