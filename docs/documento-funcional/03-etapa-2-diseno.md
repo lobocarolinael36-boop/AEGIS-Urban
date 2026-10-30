@@ -26,6 +26,7 @@ Las migraciones de `aegis-urban-backend/database/migrations/` son la fuente de v
 | `alert` | nivel, tipo, texto, estado y responsables | se origina en un sensor |
 | `evacuation_plan` | estrategia, ruta, alcance y estado | se asocia a una alerta |
 | `simulation_scenario`, `simulation_event` | parámetros, estado, sensor y valor | registra ejercicios y sus lecturas |
+| `user_consent` | tipo de consentimiento, versión del texto, otorgado, fecha e IP | evidencia legal de cada usuario registrado |
 | `audit_log`, `audit_log_control` | actor, acción y huellas DVH/DVV | conserva evidencia de cambios |
 
 ![Relaciones principales del modelo de datos.](img/05_modelo_datos.svg)
@@ -57,7 +58,7 @@ Los roles determinan quién puede ejecutar cambios dentro del sistema. Las notif
 | Defensa Civil | Consulta y acciones de respuesta; ejercicios simulados |
 | Auditoría | Consulta operativa y verificación de bitácora; sin cambios operativos |
 | Administración | Gestión de usuarios, familias y configuración |
-| Ciudadanía (futuro) | Consulta pública sin cuenta obligatoria; suscripciones optativas por área |
+| Ciudadano | Vista pública `/ciudadano` sin cuenta. La cuenta es opcional (rol `CIUDADANO`, solo lectura): permite revocar la ubicación, descargar los datos propios y darse de baja |
 
 ![Matriz conceptual de permisos por familia.](img/roles_permisos.svg)
 
@@ -67,7 +68,19 @@ Los roles determinan quién puede ejecutar cambios dentro del sistema. Las notif
 
 La aplicación operativa ofrece Panel, Mapa, Sensores, Alertas, Simulación y Administración. Debe mostrar severidad con texto e icono además de color, indicar cuándo se recibió la última lectura y ofrecer recuperación cuando falla una consulta.
 
-La futura experiencia ciudadana debe abrir directamente el mapa/listado de avisos y permitir suscribirse por zona o tipo de amenaza. Cada aviso debe identificar autoridad emisora, vigencia, área afectada, fuente original y estado de actualización. Sensores AEGIS y ejercicios se etiquetan por separado; una simulación nunca se difunde como alerta pública.
+La experiencia ciudadana (`/ciudadano`) abre directamente el clima actual, el mapa de zonas de riesgo y la lista de avisos. Cada aviso indica si es **REAL** (clima de Open-Meteo) o **SIMULADO** (sensores de demostración); una simulación nunca se presenta como alerta oficial.
+
+**Alerta por ubicación.** Con el consentimiento expreso de la persona, el navegador comparte su posición y el servidor calcula si está dentro o cerca de una zona de riesgo:
+
+| Estado | Condición | Respuesta de la interfaz |
+|---|---|---|
+| Seguro | Fuera de toda zona y de su margen | Mensaje tranquilizador |
+| Precaución | Zona de severidad baja, o a menos de 1,6 veces el radio de una zona grave | Banner ámbar con la distancia |
+| Peligro | Dentro del radio de una zona crítica o catastrófica | Cartel a pantalla completa con la dirección para alejarse, vibración y notificación |
+
+El radio de peligro depende de la severidad (800 m, 1500 m o 2500 m) y se amplía 50 % en incendios. El cálculo está en `aegis-urban-backend/src/core/geo/riesgo.ts` (haversine y rumbo) y tiene pruebas unitarias. Un modo prueba permite ubicarse dentro, cerca o lejos de una zona sin moverse.
+
+**Futuro:** suscripción por zona o amenaza y avisos con la aplicación cerrada (PWA).
 
 ## 2.6 Seguridad y calidad
 

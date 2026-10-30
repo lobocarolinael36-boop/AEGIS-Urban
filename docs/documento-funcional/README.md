@@ -34,7 +34,7 @@ Documento funcional del proyecto organizado en las cuatro etapas del ciclo de vi
    - [Anexo A — Decisión de producto: roles y alertas públicas](06-anexos.md#anexo-a--decisión-de-producto-roles-y-alertas-públicas)
    - [Anexo B — Contratos de API](06-anexos.md#anexo-b--contratos-de-api)
    - [Anexo C — Glosario](06-anexos.md#anexo-c--glosario)
+   - [Anexo D — Backlog priorizado](06-anexos.md#anexo-d--backlog-priorizado)
+   - [Anexo E — Marco legal y consentimientos](06-anexos.md#anexo-e--marco-legal-y-consentimientos)
 
-La versión Word del documento funcional es [Documento_Funcional_AEGIS_Urban.docx](Documento_Funcional_AEGIS_Urban.docx).
-
-[← Volver a la documentación](../README.md)
+[← Volver a la documentación](../README.md) · [Proyecto](../../README.md)
